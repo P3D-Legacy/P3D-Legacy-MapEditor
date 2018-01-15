@@ -1,5 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Drawing;
+
+using Microsoft.Xna.Framework;
+
 using P3D_Legacy.MapEditor.Data;
+
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace P3D_Legacy.MapEditor.World
@@ -11,7 +15,7 @@ namespace P3D_Legacy.MapEditor.World
             var floorInfo = new EntityFloorInfo();
 
             var sizeList = tags.GetTag<int[]>("Size");
-            floorInfo.Size = new System.Drawing.Size(sizeList[0], sizeList[1]);
+            floorInfo.Size = new Size(sizeList[0], sizeList[1]);
             var posList = tags.GetTag<int[]>("Position");
             floorInfo.Position = new Vector3(posList[0], posList[1], posList[2]);
             floorInfo.TexturePath = tags.GetTag<string>("TexturePath");
@@ -125,7 +129,7 @@ namespace P3D_Legacy.MapEditor.World
             var posList = tags.GetTag<int[]>("Position");
             shaderInfo.Position = new Vector3(posList[0], posList[1], posList[2]);
             var objectSizeList = tags.GetTag<int[]>("Size");
-            shaderInfo.ObjectSize = new System.Drawing.Size(objectSizeList[0], objectSizeList[1]);
+            shaderInfo.ObjectSize = new Size(objectSizeList[0], objectSizeList[1]);
             var dayTime = default(int[]);
             if (tags.TagExists("DayTime"))
                 shaderInfo.DayTime = tags.GetTag<int[]>("DayTime");
@@ -191,12 +195,12 @@ namespace P3D_Legacy.MapEditor.World
             }
 
             if (sizeList.Length == 3)
-                return LoadEntity(tags, new System.Drawing.Size(sizeList[0], sizeList[2]), sizeList[1], fill, steps);
+                return LoadEntity(tags, new Size(sizeList[0], sizeList[2]), sizeList[1], fill, steps);
             else
-                return LoadEntity(tags, new System.Drawing.Size(sizeList[0], sizeList[1]), 1, fill, steps);
+                return LoadEntity(tags, new Size(sizeList[0], sizeList[1]), 1, fill, steps);
         }
 
-        public static EntityInfo LoadEntity(LevelTags tags, System.Drawing.Size size, int sizeY, bool fill, Vector3 steps)
+        public static EntityInfo LoadEntity(LevelTags tags, Size size, int sizeY, bool fill, Vector3 steps)
         {
             var entityInfo = new EntityInfo();
 
