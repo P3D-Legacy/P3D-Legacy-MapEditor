@@ -5,9 +5,9 @@ using Gemini.Framework.Commands;
 using Gemini.Framework.Services;
 using Gemini.Framework.Threading;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer3D.ViewModels;
+using P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer3D.Commands
+namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Commands
 {
     [CommandHandler]
     public class ViewSceneViewerCommandHandler : CommandHandlerBase<ViewSceneViewerCommandDefinition>

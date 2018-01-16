@@ -9,10 +9,10 @@ using Gemini.Modules.Output;
 
 using Microsoft.Xna.Framework;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer3D.ViewModels;
+using P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 using P3D_Legacy.MapEditor.Primitives;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer3D.Views
+namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
 {
     /// <summary>
     /// Interaction logic for SceneView.xaml

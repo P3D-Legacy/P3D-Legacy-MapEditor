@@ -146,6 +146,19 @@
     <Compile Include="Data\ShaderInfo.cs" />
     <Compile Include="Data\StructureInfo.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Modules\SceneViewer\Commands\NewFileCommandHandler.cs" />
+    <Compile Include="Modules\SceneViewer\Commands\ViewSceneViewerCommandDefinition.cs" />
+    <Compile Include="Modules\SceneViewer\Commands\ViewSceneViewerCommandHandler.cs" />
+    <Compile Include="Modules\SceneViewer\MenuDefinitions.cs" />
+    <Compile Include="Modules\SceneViewer\Module.cs" />
+    <Compile Include="Modules\SceneViewer\Renders\IRender.cs" />
+    <Compile Include="Modules\SceneViewer\Renders\Render2D.cs" />
+    <Compile Include="Modules\SceneViewer\Renders\Render3D.cs" />
+    <Compile Include="Modules\SceneViewer\ViewModels\SceneViewModel.cs" />
+    <Compile Include="Modules\SceneViewer\Views\ISceneView.cs" />
+    <Compile Include="Modules\SceneViewer\Views\SceneView.xaml.cs">
+      <DependentUpon>SceneView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\Camera.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="World\Entity.cs" />
@@ -154,15 +167,6 @@
     <Compile Include="World\TagsLoader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modules\SceneViewer3D\Commands\ViewSceneViewerCommandDefinition.cs" />
-    <Compile Include="Modules\SceneViewer3D\Commands\ViewSceneViewerCommandHandler.cs" />
-    <Compile Include="Modules\SceneViewer3D\MenuDefinitions.cs" />
-    <Compile Include="Modules\SceneViewer3D\Module.cs" />
-    <Compile Include="Modules\SceneViewer3D\ViewModels\SceneViewModel.cs" />
-    <Compile Include="Modules\SceneViewer3D\Views\ISceneView.cs" />
-    <Compile Include="Modules\SceneViewer3D\Views\SceneView.xaml.cs">
-      <DependentUpon>SceneView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Modules\Startup\Module.cs" />
     <Compile Include="Primitives\CubePrimitive.cs" />
     <Compile Include="Primitives\GeometricPrimitive.cs" />
@@ -180,10 +184,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Properties\Resources.de.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ru.resx" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -193,7 +200,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Modules\SceneViewer3D\Views\SceneView.xaml">
+    <Page Include="Modules\SceneViewer\Views\SceneView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

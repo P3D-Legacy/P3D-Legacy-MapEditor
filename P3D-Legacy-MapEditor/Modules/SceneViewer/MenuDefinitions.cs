@@ -2,14 +2,15 @@
 
 using Gemini.Framework.Menus;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer3D.Commands;
+using P3D_Legacy.MapEditor.Modules.SceneViewer.Commands;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer3D
+namespace P3D_Legacy.MapEditor.Modules.SceneViewer
 {
     public static class MenuDefinitions
     {
-        [Export]
-        public static MenuItemDefinition ViewSceneViewerMenuItem = new CommandMenuItemDefinition<ViewSceneViewerCommandDefinition>(
-            Startup.Module.SceneViewer3D, 1);
+        // We don't need a menu entry if we will open it via file creation
+        //[Export]
+        //public static MenuItemDefinition ViewSceneViewerMenuItem = new CommandMenuItemDefinition<ViewSceneViewerCommandDefinition>(
+        //    Startup.Module.SceneViewer3D, 1);
     }
 }

@@ -59,5 +59,23 @@ namespace P3D_Legacy.MapEditor.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untitled {0}.
+        /// </summary>
+        internal static string FileNewUntitled {
+            get {
+                return ResourceManager.GetString("FileNewUntitled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Map File.
+        /// </summary>
+        internal static string MapFile {
+            get {
+                return ResourceManager.GetString("MapFile", resourceCulture);
+            }
+        }
     }
 }

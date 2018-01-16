@@ -1,6 +1,6 @@
 ﻿using Gemini.Framework.Commands;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer3D.Commands
+namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Commands
 {
     [CommandDefinition]
     public class ViewSceneViewerCommandDefinition : CommandDefinition

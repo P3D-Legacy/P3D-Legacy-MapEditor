@@ -6,9 +6,9 @@ using Gemini.Framework;
 using Gemini.Modules.Inspector;
 using Gemini.Modules.Inspector.MonoGame;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer3D.ViewModels;
+using P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer3D
+namespace P3D_Legacy.MapEditor.Modules.SceneViewer
 {
 	[Export(typeof(IModule))]
 	public class Module : ModuleBase

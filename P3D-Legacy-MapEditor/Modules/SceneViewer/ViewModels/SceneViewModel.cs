@@ -1,16 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Threading.Tasks;
+
 using Gemini.Framework;
+using Gemini.Framework.Services;
+using Gemini.Framework.Threading;
 
 using Microsoft.Xna.Framework;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer3D.Views;
+using P3D_Legacy.MapEditor.Data;
+using P3D_Legacy.MapEditor.Modules.SceneViewer.Views;
+using P3D_Legacy.MapEditor.Properties;
+using P3D_Legacy.MapEditor.World;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer3D.ViewModels
+namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
 {
     [Export(typeof(SceneViewModel))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-	public class SceneViewModel : Document
+	public class SceneViewModel : PersistedDocument
     {
         private ISceneView _sceneView;
 
@@ -29,9 +38,9 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer3D.ViewModels
             }
 	    }
 
-        public SceneViewModel()
+        public IEnumerable<EditorFileType> FileTypes
         {
-            DisplayName = "3D Scene";
+            get { yield return new EditorFileType(Resources.MapFile, ".dat"); }
         }
 
         protected override void OnViewLoaded(object view)
@@ -50,5 +59,34 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer3D.ViewModels
 
             base.OnDeactivate(close);
         }
-	}
+
+        private LevelInfo _levelInfo;
+        private string _originalText;
+        protected override Task DoNew()
+        {
+            _originalText = string.Empty;
+            LoadMap();
+            return TaskUtility.Completed;
+        }
+        protected override Task DoLoad(string filePath)
+        {
+            _originalText = File.ReadAllText(filePath);
+            LoadMap();
+            return TaskUtility.Completed;
+        }
+        protected override Task DoSave(string filePath)
+        {
+            var newText = "";
+            File.WriteAllText(filePath, newText);
+            _originalText = newText;
+            return TaskUtility.Completed;
+        }
+        private void LoadMap()
+        {
+            DisplayName = FileName;
+
+            if(!string.IsNullOrEmpty(_originalText))
+                _levelInfo = LevelLoader.Load(_originalText);
+        }
+    }
 }
