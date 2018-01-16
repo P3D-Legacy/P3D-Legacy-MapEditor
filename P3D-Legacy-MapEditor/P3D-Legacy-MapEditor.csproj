@@ -146,6 +146,7 @@
     <Compile Include="Data\ShaderInfo.cs" />
     <Compile Include="Data\StructureInfo.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Modules\SceneViewer\Commands\OpenFileCommandHandler.cs" />
     <Compile Include="Modules\SceneViewer\Commands\NewFileCommandHandler.cs" />
     <Compile Include="Modules\SceneViewer\Commands\ViewSceneViewerCommandDefinition.cs" />
     <Compile Include="Modules\SceneViewer\Commands\ViewSceneViewerCommandHandler.cs" />

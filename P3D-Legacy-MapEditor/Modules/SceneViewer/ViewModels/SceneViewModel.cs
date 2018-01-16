@@ -42,6 +42,7 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
         {
             get { yield return new EditorFileType(Resources.MapFile, ".dat"); }
         }
+        public bool Handles(string path) => Path.GetExtension(path) == ".dat";
 
         protected override void OnViewLoaded(object view)
         {
@@ -60,6 +61,10 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
             base.OnDeactivate(close);
         }
 
+        public override void SaveState(BinaryWriter writer) => writer.Write(FilePath);
+        public override void LoadState(BinaryReader reader) => Load(reader.ReadString());
+
+
         private LevelInfo _levelInfo;
         private string _originalText;
         protected override Task DoNew()
@@ -68,6 +73,7 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
             LoadMap();
             return TaskUtility.Completed;
         }
+
         protected override Task DoLoad(string filePath)
         {
             _originalText = File.ReadAllText(filePath);
