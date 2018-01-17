@@ -148,15 +148,17 @@
     <Compile Include="Logger.cs" />
     <Compile Include="Modules\SceneViewer\Commands\OpenFileCommandHandler.cs" />
     <Compile Include="Modules\SceneViewer\Commands\NewFileCommandHandler.cs" />
-    <Compile Include="Modules\SceneViewer\Commands\ViewSceneViewerCommandDefinition.cs" />
-    <Compile Include="Modules\SceneViewer\Commands\ViewSceneViewerCommandHandler.cs" />
-    <Compile Include="Modules\SceneViewer\MenuDefinitions.cs" />
+    <Compile Include="Modules\SceneViewer\Inspectors\FloatEditorViewModel.cs" />
+    <Compile Include="Modules\SceneViewer\InspectorExtensions.cs" />
     <Compile Include="Modules\SceneViewer\Module.cs" />
     <Compile Include="Modules\SceneViewer\Renders\IRender.cs" />
     <Compile Include="Modules\SceneViewer\Renders\Render2D.cs" />
     <Compile Include="Modules\SceneViewer\Renders\Render3D.cs" />
     <Compile Include="Modules\SceneViewer\ViewModels\SceneViewModel.cs" />
     <Compile Include="Modules\SceneViewer\Views\ISceneView.cs" />
+    <Compile Include="Modules\SceneViewer\Inspectors\FloatEditorView.xaml.cs">
+      <DependentUpon>FloatEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modules\SceneViewer\Views\SceneView.xaml.cs">
       <DependentUpon>SceneView.xaml</DependentUpon>
     </Compile>
@@ -201,6 +203,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Modules\SceneViewer\Inspectors\FloatEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Modules\SceneViewer\Views\SceneView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

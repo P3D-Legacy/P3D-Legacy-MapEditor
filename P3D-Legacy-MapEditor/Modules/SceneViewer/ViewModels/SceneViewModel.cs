@@ -25,18 +25,31 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
 
         public override bool ShouldReopenOnStart => true;
 
-        private Vector3 _position;
-	    public Vector3 Position
+        private Vector3 _cameraPosition;
+	    public Vector3 CameraPosition
 	    {
-            get => _position;
+            get => _cameraPosition;
 	        set
             {
-                _position = value;
-                NotifyOfPropertyChange(() => Position);
+                _cameraPosition = value;
+                NotifyOfPropertyChange(() => CameraPosition);
 
                 _sceneView?.Invalidate();
             }
 	    }
+
+        private float _cameraMoveSpeed = 30f;
+        public float CameraMoveSpeed
+        {
+            get => _cameraMoveSpeed;
+            set
+            {
+                _cameraMoveSpeed = value;
+                NotifyOfPropertyChange(() => CameraMoveSpeed);
+
+                _sceneView?.Invalidate();
+            }
+        }
 
         public IEnumerable<EditorFileType> FileTypes
         {
@@ -65,7 +78,7 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
         public override void LoadState(BinaryReader reader) => Load(reader.ReadString());
 
 
-        private LevelInfo _levelInfo;
+        public LevelInfo LevelInfo { get; private set; }
         private string _originalText;
         protected override Task DoNew()
         {
@@ -92,7 +105,7 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
             DisplayName = FileName;
 
             if(!string.IsNullOrEmpty(_originalText))
-                _levelInfo = LevelLoader.Load(_originalText);
+                LevelInfo = LevelLoader.Load(_originalText);
         }
     }
 }

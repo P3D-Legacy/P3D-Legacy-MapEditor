@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
+
 using P3D_Legacy.MapEditor.Data;
 
 namespace P3D_Legacy.MapEditor.World

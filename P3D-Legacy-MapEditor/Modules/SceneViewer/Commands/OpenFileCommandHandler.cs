@@ -5,7 +5,6 @@ using System.Windows;
 
 using Caliburn.Micro;
 
-using Gemini.Framework;
 using Gemini.Framework.Commands;
 using Gemini.Framework.Services;
 using Gemini.Modules.Shell.Commands;
@@ -13,7 +12,6 @@ using Gemini.Modules.Shell.Commands;
 using Microsoft.Win32;
 
 using P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels;
-using P3D_Legacy.MapEditor.Properties;
 
 namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Commands
 {

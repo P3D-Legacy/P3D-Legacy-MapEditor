@@ -9,29 +9,56 @@ using Gemini.Modules.Output;
 
 using Microsoft.Xna.Framework;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels;
-using P3D_Legacy.MapEditor.Primitives;
+using P3D_Legacy.MapEditor.Modules.SceneViewer.Renders;
+
 
 namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
 {
+    public enum RenderMode
+    {
+        None,
+        Mode2D,
+        Mode3D
+    }
+
     /// <summary>
     /// Interaction logic for SceneView.xaml
     /// </summary>
     public partial class SceneView : UserControl, ISceneView, IDisposable
     {
         private readonly IOutput _output;
-        private readonly CubePrimitive _cube;
 
-        // A yaw and pitch applied to the viewport based on input
-        private System.Windows.Point _previousPosition;
-        private float _yaw = 0.5f;
-        private float _pitch = 0.2f;
+        private RenderMode RenderMode { get; set; }
+        private IRender CurrentRender
+        {
+            get
+            {
+                switch (RenderMode)
+                {
+                    case RenderMode.Mode2D:
+                        return Render2D;
+
+                    case RenderMode.Mode3D:
+                        return Render3D;
+
+                    default:
+                        return Render3D;
+                }
+            }
+        }
+        
+        private IRender Render2D { get; }
+        private IRender Render3D { get; }
+
 
         public SceneView()
         {
             InitializeComponent();
+
             _output = IoC.Get<IOutput>();
-            _cube = new CubePrimitive();
+
+            Render2D = new Render2D(this);
+            Render3D = new Render3D(this);
         }
 
         public void Invalidate()
@@ -49,8 +76,7 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
         /// </summary>
         private void OnGraphicsControlLoadContent(object sender, GraphicsDeviceEventArgs e)
         {
-            // Create our 3D cube object
-            _cube.Initialize(e.GraphicsDevice);
+            CurrentRender.Initialize(e.GraphicsDevice);
         }
 
         /// <summary>
@@ -60,61 +86,58 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
         {
             e.GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // Create the world-view-projection matrices for the cube and camera
-            var position = ((SceneViewModel) DataContext).Position;
-            var world = Matrix.CreateFromYawPitchRoll(_yaw, _pitch, 0f) * Matrix.CreateTranslation(position);
-            var view = Matrix.CreateLookAt(new Vector3(0, 0, 2.5f), Vector3.Zero, Vector3.Up);
-            var projection = Matrix.CreatePerspectiveFieldOfView(1, e.GraphicsDevice.Viewport.AspectRatio, 1, 10);
-
-            // Draw a cube
-            _cube.Draw(world, view, projection, Color.LightGreen);
+            CurrentRender.Draw(e.GraphicsDevice);
         }
 
         // Invoked when the mouse moves over the second viewport
         private void OnGraphicsControlMouseMove(object sender, MouseEventArgs e)
         {
-            var position = e.GetPosition(this);
-
-            // If the left or right buttons are down, we adjust the yaw and pitch of the cube
-            if (e.LeftButton == MouseButtonState.Pressed ||
-                e.RightButton == MouseButtonState.Pressed)
-            {
-                _yaw += (float) (position.X - _previousPosition.X) * .01f;
-                _pitch += (float) (position.Y - _previousPosition.Y) * .01f;
+            if (CurrentRender.HandleMouse(e.MouseDevice))
                 GraphicsControl.Invalidate();
-            }
-
-            _previousPosition = position;
         }
 
         // We use the left mouse button to do exclusive capture of the mouse so we can drag and drag
         // to rotate the cube without ever leaving the control
         private void OnGraphicsControlHwndLButtonDown(object sender, MouseEventArgs e)
         {
+            if (CurrentRender.HandleMouse(e.MouseDevice))
+                GraphicsControl.Invalidate();
+
             _output.AppendLine("Mouse left button down");
-            _previousPosition = e.GetPosition(this);
             GraphicsControl.CaptureMouse();
             GraphicsControl.Focus();
         }
 
         private void OnGraphicsControlHwndLButtonUp(object sender, MouseEventArgs e)
         {
+            if (CurrentRender.HandleMouse(e.MouseDevice))
+                GraphicsControl.Invalidate();
+
             _output.AppendLine("Mouse left button up");
             GraphicsControl.ReleaseMouseCapture();
         }
 
         private void OnGraphicsControlKeyDown(object sender, KeyEventArgs e)
         {
+            if(CurrentRender.HandleKeyboard(e.KeyboardDevice))
+                GraphicsControl.Invalidate();
+
             _output.AppendLine("Key down: " + e.Key);
         }
 
         private void OnGraphicsControlKeyUp(object sender, KeyEventArgs e)
         {
+            if (CurrentRender.HandleKeyboard(e.KeyboardDevice))
+                GraphicsControl.Invalidate();
+
             _output.AppendLine("Key up: " + e.Key);
         }
 
         private void OnGraphicsControlHwndMouseWheel(object sender, MouseWheelEventArgs e)
         {
+            if (CurrentRender.HandleMouse(e.MouseDevice))
+                GraphicsControl.Invalidate();
+
             _output.AppendLine("Mouse wheel: " + e.Delta);
         }
     }
