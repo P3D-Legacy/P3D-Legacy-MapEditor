@@ -123,4 +123,11 @@
   <data name="MapFile" xml:space="preserve">
     <value>Map File</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="P3D_Legacy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\icons\p3d-legacy.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>P3D-Legacy: Map Editor</value>
+  </data>
 </root>

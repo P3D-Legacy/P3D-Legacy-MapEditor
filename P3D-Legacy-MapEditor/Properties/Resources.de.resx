@@ -123,4 +123,7 @@
   <data name="MapFile" xml:space="preserve">
     <value>Karte</value>
   </data>
+  <data name="Title" xml:space="preserve">
+    <value>P3D-Legacy: Karteneditor</value>
+  </data>
 </root>

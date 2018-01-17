@@ -77,5 +77,24 @@ namespace P3D_Legacy.MapEditor.Properties {
                 return ResourceManager.GetString("MapFile", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon P3D_Legacy {
+            get {
+                object obj = ResourceManager.GetObject("P3D_Legacy", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P3D-Legacy: Map Editor.
+        /// </summary>
+        internal static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
     }
 }
