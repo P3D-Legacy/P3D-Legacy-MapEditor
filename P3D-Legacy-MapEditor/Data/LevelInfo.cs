@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace P3D_Legacy.MapEditor.Data
+namespace P3D.Legacy.MapEditor.Data
 {
     public class LevelInfo
     {
@@ -33,8 +33,10 @@ namespace P3D_Legacy.MapEditor.Data
         public ShaderInfo Shader { get; }
         public BackdropInfo Backdrop { get; }
 
+        public string Path { get; }
 
-        public LevelInfo(LevelTags levelTags, LevelTags actionTags, List<EntityInfo> entities, List<StructureInfo> structures, List<OffsetMapInfo> offsetMaps, ShaderInfo shader, BackdropInfo backdrop)
+
+        public LevelInfo(LevelTags levelTags, string path, LevelTags actionTags, List<EntityInfo> entities, List<StructureInfo> structures, List<OffsetMapInfo> offsetMaps, ShaderInfo shader, BackdropInfo backdrop)
         {
             Name = levelTags.GetTag<string>("Name");
             MusicLoop = levelTags.GetTag<string>("MusicLoop");
@@ -100,6 +102,8 @@ namespace P3D_Legacy.MapEditor.Data
             OffsetMaps = offsetMaps;
             Shader = shader;
             Backdrop = backdrop;
+
+            Path = path;
         }
 
         public override string ToString() => Name;

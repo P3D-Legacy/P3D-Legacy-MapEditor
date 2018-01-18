@@ -7,7 +7,7 @@
     <ProjectGuid>{C723324B-E0FA-4F77-A616-F2B96F4C4198}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>P3D_Legacy.MapEditor</RootNamespace>
+    <RootNamespace>P3D.Legacy.MapEditor</RootNamespace>
     <AssemblyName>P3D-Legacy-MapEditor</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -142,6 +142,26 @@
     <Compile Include="Data\LevelTagEntry.cs" />
     <Compile Include="Data\LevelTags.cs" />
     <Compile Include="Data\LevelTagType.cs" />
+    <Compile Include="Data\Models\2D\BillModel.cs" />
+    <Compile Include="Data\Models\2D\CrossModel.cs" />
+    <Compile Include="Data\Models\2D\DoubleFloorModel.cs" />
+    <Compile Include="Data\Models\2D\FloorModel.cs" />
+    <Compile Include="Data\Models\BaseModelOld.cs" />
+    <Compile Include="Data\Models\Blocks\BlockModel.cs" />
+    <Compile Include="Data\Models\Blocks\CornerModel.cs" />
+    <Compile Include="Data\Models\Blocks\CubeModel.cs" />
+    <Compile Include="Data\Models\Blocks\InsideCornerModel.cs" />
+    <Compile Include="Data\Models\Blocks\PyramidModel.cs" />
+    <Compile Include="Data\Models\Blocks\SlideModel.cs" />
+    <Compile Include="Data\Models\Blocks\StairsModel.cs" />
+    <Compile Include="Data\Models\Cliffs\CliffCornerModel.cs" />
+    <Compile Include="Data\Models\Cliffs\CliffInsideModel.cs" />
+    <Compile Include="Data\Models\Cliffs\CliffModel.cs" />
+    <Compile Include="Data\Models\Other\SignModel.cs" />
+    <Compile Include="Data\Models\Steps\InsideStepModel.cs" />
+    <Compile Include="Data\Models\Steps\StepModel.cs" />
+    <Compile Include="Data\Models\BaseModel.cs" />
+    <Compile Include="Primitives\VertexWorldNormalTexture.cs" />
     <Compile Include="Data\OffsetMapInfo.cs" />
     <Compile Include="Data\ShaderInfo.cs" />
     <Compile Include="Data\StructureInfo.cs" />
@@ -151,9 +171,10 @@
     <Compile Include="Modules\SceneViewer\Inspectors\FloatEditorViewModel.cs" />
     <Compile Include="Modules\SceneViewer\InspectorExtensions.cs" />
     <Compile Include="Modules\SceneViewer\Module.cs" />
+    <Compile Include="Utils\Camera3D.cs" />
+    <Compile Include="Utils\Camera3DNilllzz.cs" />
     <Compile Include="Modules\SceneViewer\Renders\IRender.cs" />
-    <Compile Include="Modules\SceneViewer\Renders\Render2D.cs" />
-    <Compile Include="Modules\SceneViewer\Renders\Render3D.cs" />
+    <Compile Include="Modules\SceneViewer\Renders\Render.cs" />
     <Compile Include="Modules\SceneViewer\ViewModels\SceneViewModel.cs" />
     <Compile Include="Modules\SceneViewer\Views\ISceneView.cs" />
     <Compile Include="Modules\SceneViewer\Inspectors\FloatEditorView.xaml.cs">
@@ -169,6 +190,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utils\Camera.cs" />
+    <Compile Include="Utils\CameraNilllzz.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="World\Entity.cs" />
     <Compile Include="World\Level.cs" />
@@ -196,6 +218,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ru.resx" />
     <None Include="app.config" />
+    <None Include="Content\Shader.mgfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

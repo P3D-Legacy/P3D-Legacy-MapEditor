@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-
 using Gemini.Framework;
 using Gemini.Modules.Inspector;
 using Gemini.Modules.Inspector.Conventions;
 using Gemini.Modules.Inspector.MonoGame;
+using P3D.Legacy.MapEditor.Modules.SceneViewer.Inspectors;
+using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer.Inspectors;
-using P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels;
-
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer
+namespace P3D.Legacy.MapEditor.Modules.SceneViewer
 {
 	[Export(typeof(IModule))]
 	public class Module : ModuleBase

@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-
 using Microsoft.Xna.Framework;
+using P3D.Legacy.MapEditor.Data;
 
-using P3D_Legacy.MapEditor.Data;
-
-namespace P3D_Legacy.MapEditor.World
+namespace P3D.Legacy.MapEditor.World
 {
     public class LevelLoader
     {
-        public static LevelInfo Load(string text)
+        public static LevelInfo Load(string text, string path)
         {
             var data = text.Split(new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
@@ -45,26 +43,30 @@ namespace P3D_Legacy.MapEditor.World
 
                         var map = tags.GetTag<string>("map");
                         var offset = tags.GetTag<float[]>("offset");
+                        var rotation = tags.TagExists("Rotation") ? tags.GetTag<int>("Rotation") : -1;
+                        var addNPC = tags.TagExists("AddNPC") && tags.GetTag<bool>("AddNPC");
                         structures.Add(new StructureInfo()
                         {
                             Map = map,
-                            Offset = new Vector3(offset[0], offset[1], offset[2])
+                            Offset = new Vector3(offset[0], offset[1], offset[2]),
+                            Rotation = rotation,
+                            AddNPC = addNPC
                         });
                     }
                     else if (currLine.ToLowerInvariant().StartsWith(@"entity"""))
                     {
                         tagType = LevelTagType.Entity;
-                        entities.Add(TagsLoader.LoadEntity(tags, new System.Drawing.Size(1, 1), 1, true, new Vector3(1, 1, 1)));
+                        entities.AddRange(TagsLoader.LoadEntity(tags));
                     }
                     else if (currLine.ToLowerInvariant().StartsWith(@"floor"""))
                     {
                         tagType = LevelTagType.Floor;
-                        entities.Add(TagsLoader.LoadFloor(tags));
+                        entities.AddRange(TagsLoader.LoadFloor(tags));
                     }
                     else if (currLine.ToLowerInvariant().StartsWith(@"entityfield"""))
                     {
                         tagType = LevelTagType.EntityField;
-                        entities.Add(TagsLoader.LoadEntityField(tags));
+                        entities.AddRange(TagsLoader.LoadEntityField(tags));
                     }
                     else if (currLine.ToLowerInvariant().StartsWith(@"level"""))
                     {
@@ -108,10 +110,10 @@ namespace P3D_Legacy.MapEditor.World
                 }
             }
 
-            return new LevelInfo(levelTags, actionTags, entities, structures, offsetMaps, shader, backdrop);
+            return new LevelInfo(levelTags, path, actionTags, entities, structures, offsetMaps, shader, backdrop);
         }
 
-        private static LevelTags GetTags(string line)
+        public static LevelTags GetTags(string line)
         {
             var tags = new LevelTags();
 
@@ -170,7 +172,7 @@ namespace P3D_Legacy.MapEditor.World
                             break;
 
                         case "intarr":
-                            tags.Add(tagName, subTagValue.Split(',').Select(s => int.Parse(s, CultureInfo.InvariantCulture)).ToArray());
+                            tags.Add(tagName, subTagValue.Split(',').Select(s => Convert.ToInt32(s, CultureInfo.InvariantCulture)).ToArray());
                             break;
 
                         case "rec":

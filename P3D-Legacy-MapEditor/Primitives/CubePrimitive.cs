@@ -7,7 +7,7 @@
 
 using Microsoft.Xna.Framework;
 
-namespace P3D_Legacy.MapEditor.Primitives
+namespace P3D.Legacy.MapEditor.Primitives
 {
     /// <summary>
     /// Geometric primitive class for drawing cubes.

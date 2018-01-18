@@ -1,4 +1,4 @@
-﻿<Application x:Class="P3D_Legacy.MapEditor.App"
+﻿<Application x:Class="P3D.Legacy.MapEditor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:gemini="http://schemas.timjones.tw/gemini">

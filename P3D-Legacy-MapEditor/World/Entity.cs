@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace P3D_Legacy.MapEditor.World
+namespace P3D.Legacy.MapEditor.World
 {
     public class Entity
     {
@@ -20,5 +20,22 @@ namespace P3D_Legacy.MapEditor.World
 
             return Vector3.Zero;
         }
+        public static int GetRotationFromVector(Vector3 v)
+        {
+            if (v.Y == 0)
+                return 0;
+            if (v.Y == MathHelper.PiOver2)
+                return 1;
+            if (v.Y == MathHelper.Pi)
+                return 2;
+            if (v.Y == MathHelper.Pi * 1.5f)
+                return 3;
+
+            return 0;
+        }
+
+        public Matrix World { get; set; }
+        public float Opacity { get; set; }
+        public Vector3 Shader { get; set; }
     }
 }

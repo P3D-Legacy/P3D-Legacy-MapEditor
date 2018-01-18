@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Drawing;
+using Microsoft.Xna.Framework;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
-namespace P3D_Legacy.MapEditor.Data
+namespace P3D.Legacy.MapEditor.Data
 {
     public class EntityInfo
     {
@@ -26,6 +27,12 @@ namespace P3D_Legacy.MapEditor.Data
         public string SeasonToggle { get; set; } = "";
         public float Opacity { get; set; } = 1f;
 
+        public bool Fill { get; set; }
+        public Vector3 Size { get; set; }
+        public Vector3 Steps { get; set; }
+
+
+        public EntityInfo ShallowCopy() => (EntityInfo) MemberwiseClone();
 
         public override string ToString() => EntityID;
     }

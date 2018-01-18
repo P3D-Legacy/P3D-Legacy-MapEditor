@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace P3D_Legacy.MapEditor.Utils
+namespace P3D.Legacy.MapEditor.Utils
 {
     //https://github.com/nilllzz/Game-Dev-Common/blob/5d3e220b7fe20b51d6046ebb7fc95e0a07ab4b9d/src/GameDevCommon/Rendering/Geometry.cs
     public sealed class Geometry<VertexType> : IDisposable where VertexType : struct

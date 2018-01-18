@@ -1,18 +1,17 @@
-﻿using System.Drawing;
-
+﻿using System.Collections.Generic;
+using System.Drawing;
 using Microsoft.Xna.Framework;
-
-using P3D_Legacy.MapEditor.Data;
-
+using P3D.Legacy.MapEditor.Data;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
-namespace P3D_Legacy.MapEditor.World
+namespace P3D.Legacy.MapEditor.World
 {
     public static class TagsLoader
     {
-        public static EntityFloorInfo LoadFloor(LevelTags tags)
+        public static IList<EntityFloorInfo> LoadFloor(LevelTags tags)
         {
             var floorInfo = new EntityFloorInfo();
+            var list = new List<EntityFloorInfo>();
 
             var sizeList = tags.GetTag<int[]>("Size");
             floorInfo.Size = new Size(sizeList[0], sizeList[1]);
@@ -71,7 +70,20 @@ namespace P3D_Legacy.MapEditor.World
             if (tags.TagExists("SeasonTexture"))
                 floorInfo.SeasonTexture = tags.GetTag<string>("SeasonTexture");
 
-            return floorInfo;
+            if(floorInfo.Size.Width > 0 || floorInfo.Size.Height > 0)
+            {
+                for (int x = 0; x < floorInfo.Size.Width; x++)
+                for (int z = 0; z < floorInfo.Size.Height; z++)
+                {
+                    var ent1 = floorInfo.ShallowCopy();
+                    ent1.Position += new Vector3(x, 0, z);
+                    list.Add((EntityFloorInfo) ent1);
+                }
+            }
+            else
+                list.Add(floorInfo);
+
+            return list;
         }
 
         public static EntityNPCInfo LoadNpc(LevelTags tags)
@@ -179,7 +191,7 @@ namespace P3D_Legacy.MapEditor.World
             return offsetMapInfo;
         }
 
-        public static EntityInfo LoadEntityField(LevelTags tags)
+        public static IList<EntityInfo> LoadEntityField(LevelTags tags)
         {
             var sizeList = tags.GetTag<int[]>("Size");
 
@@ -195,14 +207,20 @@ namespace P3D_Legacy.MapEditor.World
             }
 
             if (sizeList.Length == 3)
-                return LoadEntity(tags, new Size(sizeList[0], sizeList[2]), sizeList[1], fill, steps);
+                return LoadEntity(tags, new Vector3(sizeList[0], sizeList[1], sizeList[2]), fill, steps);
             else
-                return LoadEntity(tags, new Size(sizeList[0], sizeList[1]), 1, fill, steps);
+                return LoadEntity(tags, new Vector3(sizeList[0], 1, sizeList[1]), fill, steps);
         }
 
-        public static EntityInfo LoadEntity(LevelTags tags, Size size, int sizeY, bool fill, Vector3 steps)
+        public static IList<EntityInfo> LoadEntity(LevelTags tags) => LoadEntity(tags, Vector3.Zero, false, Vector3.Zero);
+        public static IList<EntityInfo> LoadEntity(LevelTags tags, Vector3 size, bool fill, Vector3 steps)
         {
             var entityInfo = new EntityInfo();
+            var list = new List<EntityInfo>();
+
+            entityInfo.Fill = fill;
+            entityInfo.Size = size;
+            entityInfo.Steps = steps;
 
             entityInfo.EntityID = tags.GetTag<string>("EntityID");
 
@@ -258,52 +276,22 @@ namespace P3D_Legacy.MapEditor.World
             if (tags.TagExists("Opacity"))
                 entityInfo.Opacity = tags.GetTag<float>("Opacity");
 
-            for (float x = 0; x <= size.Width - 1; x += steps.X)
-            for (float z = 0; z <= size.Height - 1; z += steps.Z)
-            for (float y = 0; y <= sizeY - 1; y += steps.Y)
+            if (fill)
             {
-                var doAdd = false;
-                if (fill == false)
+                //continue;
+                for (int x = 0; x < entityInfo.Size.X; x++)
+                for (int y = 0; y < entityInfo.Size.Y; y++)
+                for (int z = 0; z < entityInfo.Size.Z; z++)
                 {
-                    if (x == 0 || z == 0 || z == size.Height - 1 || x == size.Width - 1)
-                    {
-                        doAdd = true;
-                    }
-                }
-                else
-                {
-                    doAdd = true;
-                }
-
-                if (!string.IsNullOrEmpty(entityInfo.SeasonToggle))
-                {
-                    if (!entityInfo.SeasonToggle.Contains(","))
-                    {
-                        //if (seasonToggle.ToLower() != BaseWorld.CurrentSeason.ToString(NumberFormatInfo.InvariantInfo).ToLower())
-                        //    doAdd = false;
-                    }
-                    else
-                    {
-                        //var seasons = seasonToggle.ToLower().Split(Convert.ToChar(","));
-                        //if (seasons.Contains(BaseWorld.CurrentSeason.ToString(NumberFormatInfo.InvariantInfo).ToLower()) == false)
-                        //    doAdd = false;
-                    }
-                }
-
-                if (doAdd)
-                {
-                    //var newEnt = Entity.GetNewEntity(EntityID,
-                    //    new Vector3(Position.X + X, Position.Y + Y, Position.Z + Z), TextureArray, TextureIndex,
-                    //    Collision, Rotation, Scale, BaseModel.getModelbyID(ModelID), ActionValue,
-                    //    AdditionalValue,
-                    //    Visible, Shader, ID, MapOrigin, SeasonTexture, Offset,  {
-                    //}, Opacity);
-                    //newEnt.IsOffsetMapContent = loadOffsetMap;
-                    //return newEnt;
+                    var ent1 = entityInfo.ShallowCopy();
+                    ent1.Position += new Vector3(x, y, z);
+                    list.Add(ent1);
                 }
             }
+            else
+                list.Add(entityInfo);
 
-            return entityInfo;
+            return list;
         }
     }
 }

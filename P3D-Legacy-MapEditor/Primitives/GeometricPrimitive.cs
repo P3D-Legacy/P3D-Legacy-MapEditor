@@ -7,10 +7,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using P3D.Legacy.MapEditor.Data;
 
-namespace P3D_Legacy.MapEditor.Primitives
+namespace P3D.Legacy.MapEditor.Primitives
 {
     /// <summary>
     /// Base class for simple geometric primitive models. This provides a vertex
@@ -33,7 +35,7 @@ namespace P3D_Legacy.MapEditor.Primitives
         // store it on the GPU ready for efficient rendering.
         private VertexBuffer _vertexBuffer;
         private IndexBuffer _indexBuffer;
-        private BasicEffect _basicEffect;
+        //private Effect _effect;
 
         #endregion
 
@@ -46,6 +48,10 @@ namespace P3D_Legacy.MapEditor.Primitives
         protected void AddVertex(Vector3 position, Vector3 normal)
         {
             _vertices.Add(new VertexPositionNormal(position, normal));
+            //_vertices.Add(new VertexWorldNormalTexture(
+            //    Matrix.Transpose(Matrix.CreateTranslation(position)), 
+            //    normal, 
+            //    Vector2.Zero));
         }
 
         /// <summary>
@@ -55,7 +61,7 @@ namespace P3D_Legacy.MapEditor.Primitives
         protected void AddIndex(int index)
         {
             if (index > ushort.MaxValue)
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
 
             _indices.Add((ushort)index);
         }
@@ -77,22 +83,23 @@ namespace P3D_Legacy.MapEditor.Primitives
             // Create a vertex declaration, describing the format of our vertex data.
 
             // Create a vertex buffer, and copy our vertex data into it.
-            _vertexBuffer = new VertexBuffer(graphicsDevice,
-                                            typeof(VertexPositionNormal),
-                                            _vertices.Count, BufferUsage.None);
+            _vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionNormal), _vertices.Count, BufferUsage.None);
 
             _vertexBuffer.SetData(_vertices.ToArray());
 
             // Create an index buffer, and copy our index data into it.
-            _indexBuffer = new IndexBuffer(graphicsDevice, typeof(ushort),
-                                          _indices.Count, BufferUsage.None);
+            _indexBuffer = new IndexBuffer(graphicsDevice, typeof(ushort), _indices.Count, BufferUsage.None);
 
             _indexBuffer.SetData(_indices.ToArray());
 
-            // Create a BasicEffect, which will be used to render the primitive.
-            _basicEffect = new BasicEffect(graphicsDevice);
+            //var reader = new BinaryReader(File.Open("C:\\GitHub\\P3D-Legacy-MapEditor — копия\\P3D-Legacy-MapEditor\\Content\\Shader.mgfx", FileMode.Open));
+            //_effect = new Effect(graphicsDevice, reader.ReadBytes((int) reader.BaseStream.Length));
+            //reader.Dispose();
 
-            _basicEffect.EnableDefaultLighting();            
+            // Create a BasicEffect, which will be used to render the primitive.
+            //_effect = new BasicEffect(graphicsDevice);
+
+            //_effect.EnableDefaultLighting();            
         }
 
         /// <summary>
@@ -119,14 +126,11 @@ namespace P3D_Legacy.MapEditor.Primitives
         {
             if (disposing)
             {
-                if (_vertexBuffer != null)
-                    _vertexBuffer.Dispose();
+                _vertexBuffer?.Dispose();
 
-                if (_indexBuffer != null)
-                    _indexBuffer.Dispose();
+                _indexBuffer?.Dispose();
 
-                if (_basicEffect != null)
-                    _basicEffect.Dispose();
+                //_effect?.Dispose();
             }
         }
 
@@ -155,8 +159,7 @@ namespace P3D_Legacy.MapEditor.Primitives
 
                 var primitiveCount = _indices.Count / 3;
 
-                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0,
-                    _vertices.Count, 0, primitiveCount);
+                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, _vertices.Count, 0, primitiveCount);
             }
         }
 
@@ -167,31 +170,29 @@ namespace P3D_Legacy.MapEditor.Primitives
         /// for 3D model rendering, so you do not need to set these states before
         /// you call it.
         /// </summary>
-        public void Draw(Matrix world, Matrix view, Matrix projection, Color color)
+        public void Draw(Effect effect, Color color)
         {
             // Set BasicEffect parameters.
-            _basicEffect.World = world;
-            _basicEffect.View = view;
-            _basicEffect.Projection = projection;
-            _basicEffect.DiffuseColor = color.ToVector3();
-            _basicEffect.Alpha = color.A / 255.0f;
+            /*
+            _effect.World = world;
+            _effect.View = view;
+            _effect.Projection = projection;
+            _effect.DiffuseColor = color.ToVector3();
+            _effect.Alpha = color.A / 255.0f
+            */
 
-            var device = _basicEffect.GraphicsDevice;
+            //_effect.Parameters["ViewProjection"].SetValue(view * projection);
+            effect.Parameters["DiffuseColor"].SetValue(color.ToVector4());
+            //effect.Parameters["Alpha"].SetValue(color.A / 255.0f);
+
+            var device = effect.GraphicsDevice;
+
             device.DepthStencilState = DepthStencilState.Default;
 
-            if (color.A < 255)
-            {
-                // Set renderstates for alpha blended rendering.
-                device.BlendState = BlendState.AlphaBlend;
-            }
-            else
-            {
-                // Set renderstates for opaque rendering.
-                device.BlendState = BlendState.Opaque;
-            }
+            device.BlendState = color.A < 255 ? BlendState.AlphaBlend : BlendState.Opaque;
 
             // Draw the model, using BasicEffect.
-            Draw(_basicEffect);
+            Draw(effect);
         }
 
         #endregion

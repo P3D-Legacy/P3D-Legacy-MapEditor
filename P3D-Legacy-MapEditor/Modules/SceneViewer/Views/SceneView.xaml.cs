@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
-
 using Caliburn.Micro;
-
 using Gemini.Modules.MonoGame.Controls;
 using Gemini.Modules.Output;
-
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using P3D.Legacy.MapEditor.Modules.SceneViewer.Renders;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer.Renders;
-
-
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
+namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 {
     public enum RenderMode
     {
@@ -28,27 +24,9 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
     {
         private readonly IOutput _output;
 
+        public GraphicsDevice GraphicsDevice { get; private set; }
         private RenderMode RenderMode { get; set; }
-        private IRender CurrentRender
-        {
-            get
-            {
-                switch (RenderMode)
-                {
-                    case RenderMode.Mode2D:
-                        return Render2D;
-
-                    case RenderMode.Mode3D:
-                        return Render3D;
-
-                    default:
-                        return Render3D;
-                }
-            }
-        }
-        
-        private IRender Render2D { get; }
-        private IRender Render3D { get; }
+        private IRender CurrentRender { get; }
 
 
         public SceneView()
@@ -57,8 +35,7 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
 
             _output = IoC.Get<IOutput>();
 
-            Render2D = new Render2D(this);
-            Render3D = new Render3D(this);
+            CurrentRender = new Render(this);
         }
 
         public void Invalidate()
@@ -76,6 +53,7 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
         /// </summary>
         private void OnGraphicsControlLoadContent(object sender, GraphicsDeviceEventArgs e)
         {
+            GraphicsDevice = e.GraphicsDevice;
             CurrentRender.Initialize(e.GraphicsDevice);
         }
 
@@ -104,8 +82,6 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
                 GraphicsControl.Invalidate();
 
             _output.AppendLine("Mouse left button down");
-            GraphicsControl.CaptureMouse();
-            GraphicsControl.Focus();
         }
 
         private void OnGraphicsControlHwndLButtonUp(object sender, MouseEventArgs e)
@@ -114,6 +90,24 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
                 GraphicsControl.Invalidate();
 
             _output.AppendLine("Mouse left button up");
+        }
+
+        private void OnGraphicsControlHwndRButtonDown(object sender, MouseEventArgs e)
+        {
+            if (CurrentRender.HandleMouse(e.MouseDevice))
+                GraphicsControl.Invalidate();
+
+            _output.AppendLine("Mouse right button down");
+            GraphicsControl.CaptureMouse();
+            GraphicsControl.Focus();
+        }
+
+        private void OnGraphicsControlHwndRButtonUp(object sender, MouseEventArgs e)
+        {
+            if (CurrentRender.HandleMouse(e.MouseDevice))
+                GraphicsControl.Invalidate();
+
+            _output.AppendLine("Mouse right button up");
             GraphicsControl.ReleaseMouseCapture();
         }
 

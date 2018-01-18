@@ -1,4 +1,4 @@
-﻿namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
+﻿namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 {
     public interface ISceneView
     {
