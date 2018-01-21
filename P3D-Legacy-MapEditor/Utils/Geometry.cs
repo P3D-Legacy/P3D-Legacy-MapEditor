@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace P3D_Legacy.MapEditor.Utils
+namespace P3D.Legacy.MapEditor.Utils
 {
     //https://github.com/nilllzz/Game-Dev-Common/blob/5d3e220b7fe20b51d6046ebb7fc95e0a07ab4b9d/src/GameDevCommon/Rendering/Geometry.cs
-    public sealed class Geometry<VertexType> : IDisposable where VertexType : struct
+    public sealed class Geometry<TVertexType> : IDisposable where TVertexType : struct
     {
-        internal List<VertexType> _vertices = new List<VertexType>();
-        internal List<int> _indices = new List<int>();
+        private List<TVertexType> _vertices = new List<TVertexType>();
+        private List<int> _indices = new List<int>();
 
-        public VertexType[] Vertices => _vertices.ToArray();
+        public TVertexType[] Vertices => _vertices.ToArray();
         public int[] Indices => _indices.ToArray();
         public bool IsDisposed { get; private set; }
 
-        public void AddVertices(VertexType[] vertices)
+        public void AddVertices(TVertexType[] vertices)
         {
             foreach (var vertex in vertices)
             {
@@ -31,7 +31,7 @@ namespace P3D_Legacy.MapEditor.Utils
             }
         }
 
-        public void AddIndexedVertices(IEnumerable<VertexType> vertices)
+        public void AddIndexedVertices(IEnumerable<TVertexType> vertices)
         {
             foreach (var vertex in vertices)
             {
@@ -45,7 +45,7 @@ namespace P3D_Legacy.MapEditor.Utils
             _indices.AddRange(indices);
         }
 
-        public void CopyTo(Geometry<VertexType> target)
+        public void CopyTo(Geometry<TVertexType> target)
         {
             // using ToList() to create shallow copies
             target._vertices = _vertices.ToList();

@@ -1,6 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
-namespace P3D_Legacy.MapEditor.Data
+namespace P3D.Legacy.MapEditor.Data
 {
     public class EntityFloorInfo : EntityInfo
     {
@@ -14,5 +15,7 @@ namespace P3D_Legacy.MapEditor.Data
         {
             EntityID = "Floor";
         }
+
+        //public EntityFloorInfo ShallowCopy() => (EntityFloorInfo)MemberwiseClone();
     }
 }

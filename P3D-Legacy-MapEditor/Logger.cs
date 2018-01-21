@@ -1,4 +1,4 @@
-﻿namespace P3D_Legacy.MapEditor
+﻿namespace P3D.Legacy.MapEditor
 {
     public enum LogType
     {

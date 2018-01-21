@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace P3D_Legacy.MapEditor.Properties {
+namespace P3D.Legacy.MapEditor.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

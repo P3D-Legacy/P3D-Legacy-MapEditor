@@ -1,78 +1,64 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-using Microsoft.Xna.Framework;
+using P3D.Legacy.MapEditor.Data.Models;
 
-namespace P3D_Legacy.MapEditor.Utils
+namespace P3D.Legacy.MapEditor.Utils
 {
-    //https://github.com/nilllzz/Game-Dev-Common/blob/5d3e220b7fe20b51d6046ebb7fc95e0a07ab4b9d/src/GameDevCommon/Rendering/Camera.cs
-    public abstract class Camera
+    public abstract class Camera// : ICamera
     {
-        private float _fov = 90f;
         protected float NearPlane { get; set; } = 0.01f;
         protected float FarPlane { get; set; } = 1000f;
 
-        public event Action FOVChanged;
-
         public Matrix View { get; protected set; }
         public Matrix Projection { get; protected set; }
+
         public Vector3 Position { get; set; }
-        public float Yaw { get; set; }
-        public float Pitch { get; set; }
-        public float Roll { get; set; }
-        public float FOV
-        {
-            get => _fov;
-            set
-            {
-                _fov = value;
-                FOVChanged?.Invoke();
-            }
-        }
-        public float AspectRatio { get; protected set; }
+        public Vector3 Rotation { get; set; }
 
-        public Camera()
+        public float FOV { get; set; } = 45f;
+
+        public virtual void UpdateView()
         {
-            //AspectRatio = GameInstanceProvider.Instance.GraphicsDevice.Viewport.AspectRatio;
+            var rotationMatrix = Matrix.CreateRotationX(Rotation.X) * Matrix.CreateRotationY(Rotation.Y);
+            var lookAtOffset = Vector3.Transform(Vector3.UnitZ, rotationMatrix);
+            var cameraLookAt = Position + lookAtOffset;
+
+            View = Matrix.CreateLookAt(Position, cameraLookAt, Vector3.Up);
         }
 
-        protected virtual void CreateView()
+        public virtual void UpdateProjection(GraphicsDevice graphicsDevice)
         {
-            var up = Vector3.Up;
-            var forward = Vector3.Forward;
-
-            // yaw:
-            {
-                forward.Normalize();
-                forward = Vector3.Transform(forward, Matrix.CreateFromAxisAngle(up, Yaw));
-            }
-
-            // pitch:
-            {
-                forward.Normalize();
-                var left = Vector3.Cross(up, forward);
-                left.Normalize();
-
-                forward = Vector3.Transform(forward, Matrix.CreateFromAxisAngle(left, -Pitch));
-                up = Vector3.Transform(up, Matrix.CreateFromAxisAngle(left, -Pitch));
-            }
-
-            // roll:
-            {
-                up.Normalize();
-                var left = Vector3.Cross(up, forward);
-                left.Normalize();
-                up = Vector3.Transform(up, Matrix.CreateFromAxisAngle(forward, Roll));
-            }
-
-            View = Matrix.CreateLookAt(Position, forward + Position, up);
+            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(FOV), graphicsDevice.Viewport.AspectRatio, NearPlane, FarPlane);
         }
 
-        protected virtual void CreateProjection()
+        public virtual void BeforeDraw(GraphicsDevice graphicsDevice)
         {
-            Projection =
-                Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(_fov), AspectRatio, NearPlane, FarPlane);
+            UpdateView();
+            UpdateProjection(graphicsDevice);
         }
 
-        public abstract void Update();
+        public abstract Vector2 GetMouse();
+        public abstract Vector3 GetMouseInWorld();
+
+        public Ray CalculateMouseRay(Matrix world, Matrix view, Matrix projection, Viewport viewport)
+        {
+            var mouse = GetMouse();
+            var nearPoint = viewport.Unproject(new Vector3(mouse.X, mouse.Y, 0.0f), projection, view, world);
+            var farPoint = viewport.Unproject(new Vector3(mouse.X, mouse.Y, 1.0f), projection, view, world);
+
+            var direction = farPoint - nearPoint;
+            direction.Normalize();
+
+            return new Ray(nearPoint, direction);
+        }
+        public float? MouseIntersectDistance(BoundingBox box, Matrix world, Matrix view, Matrix projection, Viewport viewport)
+        {
+            return CalculateMouseRay(world, view, projection, viewport).Intersects(box);
+        }
+        public bool MouseIntersects(BaseModel model, Matrix world, Matrix view, Matrix projection, Viewport viewport)
+        {
+            return MouseIntersectDistance(model.BoundingBox, world, view, projection, viewport) != null;
+        }
     }
 }

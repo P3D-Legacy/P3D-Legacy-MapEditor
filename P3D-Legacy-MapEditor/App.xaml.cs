@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace P3D_Legacy.MapEditor
+namespace P3D.Legacy.MapEditor
 {
     /// <summary>
     /// Interaction logic for App.xaml

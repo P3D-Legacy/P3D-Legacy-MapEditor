@@ -10,12 +10,12 @@ using Gemini.Framework.Threading;
 
 using Microsoft.Xna.Framework;
 
-using P3D_Legacy.MapEditor.Data;
-using P3D_Legacy.MapEditor.Modules.SceneViewer.Views;
-using P3D_Legacy.MapEditor.Properties;
-using P3D_Legacy.MapEditor.World;
+using P3D.Legacy.MapEditor.Data;
+using P3D.Legacy.MapEditor.Modules.SceneViewer.Views;
+using P3D.Legacy.MapEditor.Properties;
+using P3D.Legacy.MapEditor.World;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
+namespace P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels
 {
     [Export(typeof(SceneViewModel))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
@@ -105,7 +105,7 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels
             DisplayName = FileName;
 
             if(!string.IsNullOrEmpty(_originalText))
-                LevelInfo = LevelLoader.Load(_originalText);
+                LevelInfo = LevelLoader.Load(_originalText, FilePath);
         }
     }
 }

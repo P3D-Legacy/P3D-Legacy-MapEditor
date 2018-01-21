@@ -1,15 +1,12 @@
 ﻿using System.ComponentModel.Composition;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Windows.Media.Imaging;
 
 using Gemini.Framework;
 using Gemini.Framework.Menus;
 
-using P3D_Legacy.MapEditor.Properties;
+using P3D.Legacy.MapEditor.Properties;
 
-namespace P3D_Legacy.MapEditor.Modules.Startup
+namespace P3D.Legacy.MapEditor.Modules.Startup
 {
     [Export(typeof(IModule))]
     public class Module : ModuleBase

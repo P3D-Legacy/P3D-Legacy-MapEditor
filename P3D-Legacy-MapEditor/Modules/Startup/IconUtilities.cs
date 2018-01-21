@@ -7,7 +7,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace P3D_Legacy.MapEditor.Modules.Startup
+namespace P3D.Legacy.MapEditor.Modules.Startup
 {
     internal static class IconUtilities
     {

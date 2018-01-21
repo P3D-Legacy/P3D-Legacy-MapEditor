@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
-
 using Caliburn.Micro;
-
 using Gemini.Modules.MonoGame.Controls;
 using Gemini.Modules.Output;
-
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using P3D.Legacy.MapEditor.Modules.SceneViewer.Renders;
+using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
+using P3D.Legacy.MapEditor.Utils;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer.Renders;
-
-
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
+namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 {
     public enum RenderMode
     {
@@ -28,27 +26,10 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
     {
         private readonly IOutput _output;
 
-        private RenderMode RenderMode { get; set; }
-        private IRender CurrentRender
-        {
-            get
-            {
-                switch (RenderMode)
-                {
-                    case RenderMode.Mode2D:
-                        return Render2D;
-
-                    case RenderMode.Mode3D:
-                        return Render3D;
-
-                    default:
-                        return Render3D;
-                }
-            }
-        }
-        
-        private IRender Render2D { get; }
-        private IRender Render3D { get; }
+        public GraphicsDevice GraphicsDevice { get; private set; }
+        private SceneViewModel SceneViewModel => (SceneViewModel) DataContext;
+        private IRender CurrentRender { get; set; }
+        private Camera Camera { get; set; }
 
 
         public SceneView()
@@ -56,9 +37,6 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
             InitializeComponent();
 
             _output = IoC.Get<IOutput>();
-
-            Render2D = new Render2D(this);
-            Render3D = new Render3D(this);
         }
 
         public void Invalidate()
@@ -76,7 +54,11 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
         /// </summary>
         private void OnGraphicsControlLoadContent(object sender, GraphicsDeviceEventArgs e)
         {
-            CurrentRender.Initialize(e.GraphicsDevice);
+            GraphicsDevice = e.GraphicsDevice;
+
+            Camera = new Camera3DGemini(this);
+            CurrentRender = new Render(GraphicsDevice, Camera, SceneViewModel.LevelInfo);
+            CurrentRender.Initialize(GraphicsDevice);
         }
 
         /// <summary>
@@ -92,51 +74,67 @@ namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Views
         // Invoked when the mouse moves over the second viewport
         private void OnGraphicsControlMouseMove(object sender, MouseEventArgs e)
         {
-            if (CurrentRender.HandleMouse(e.MouseDevice))
-                GraphicsControl.Invalidate();
+            //if (CurrentRender.HandleMouse(e.MouseDevice))
+            //    GraphicsControl.Invalidate();
         }
 
         // We use the left mouse button to do exclusive capture of the mouse so we can drag and drag
         // to rotate the cube without ever leaving the control
         private void OnGraphicsControlHwndLButtonDown(object sender, MouseEventArgs e)
         {
-            if (CurrentRender.HandleMouse(e.MouseDevice))
-                GraphicsControl.Invalidate();
+            //if (CurrentRender.HandleMouse(e.MouseDevice))
+            //    GraphicsControl.Invalidate();
 
             _output.AppendLine("Mouse left button down");
-            GraphicsControl.CaptureMouse();
-            GraphicsControl.Focus();
         }
 
         private void OnGraphicsControlHwndLButtonUp(object sender, MouseEventArgs e)
         {
-            if (CurrentRender.HandleMouse(e.MouseDevice))
-                GraphicsControl.Invalidate();
+            //if (CurrentRender.HandleMouse(e.MouseDevice))
+            //    GraphicsControl.Invalidate();
 
             _output.AppendLine("Mouse left button up");
-            GraphicsControl.ReleaseMouseCapture();
+        }
+
+        private void OnGraphicsControlHwndRButtonDown(object sender, MouseEventArgs e)
+        {
+            //if (CurrentRender.HandleMouse(e.MouseDevice))
+            //    GraphicsControl.Invalidate();
+
+            _output.AppendLine("Mouse right button down");
+            //GraphicsControl.CaptureMouse();
+            GraphicsControl.Focus();
+        }
+
+        private void OnGraphicsControlHwndRButtonUp(object sender, MouseEventArgs e)
+        {
+            //if (CurrentRender.HandleMouse(e.MouseDevice))
+            //    GraphicsControl.Invalidate();
+
+            _output.AppendLine("Mouse right button up");
+            //GraphicsControl.ReleaseMouseCapture();
         }
 
         private void OnGraphicsControlKeyDown(object sender, KeyEventArgs e)
         {
-            if(CurrentRender.HandleKeyboard(e.KeyboardDevice))
-                GraphicsControl.Invalidate();
+            //if(CurrentRender.HandleKeyboard(e.KeyboardDevice))
+            //    GraphicsControl.Invalidate();
 
             _output.AppendLine("Key down: " + e.Key);
         }
 
         private void OnGraphicsControlKeyUp(object sender, KeyEventArgs e)
         {
-            if (CurrentRender.HandleKeyboard(e.KeyboardDevice))
-                GraphicsControl.Invalidate();
+            //if (CurrentRender.HandleKeyboard(e.KeyboardDevice))
+            //    GraphicsControl.Invalidate();
 
             _output.AppendLine("Key up: " + e.Key);
         }
 
         private void OnGraphicsControlHwndMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (CurrentRender.HandleMouse(e.MouseDevice))
-                GraphicsControl.Invalidate();
+            //if (CurrentRender.HandleMouse(e.MouseDevice))
+            //    GraphicsControl.Invalidate();
 
             _output.AppendLine("Mouse wheel: " + e.Delta);
         }

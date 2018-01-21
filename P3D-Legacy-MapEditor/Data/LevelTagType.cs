@@ -1,4 +1,4 @@
-﻿namespace P3D_Legacy.MapEditor.Data
+﻿namespace P3D.Legacy.MapEditor.Data
 {
     public enum LevelTagType
     {

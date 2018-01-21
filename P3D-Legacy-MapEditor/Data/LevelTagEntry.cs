@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace P3D_Legacy.MapEditor.Data
+namespace P3D.Legacy.MapEditor.Data
 {
     public struct LevelTagEntry : IEquatable<LevelTagEntry>
     {

@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using Microsoft.Xna.Framework;
 
-namespace P3D_Legacy.MapEditor.Data
+namespace P3D.Legacy.MapEditor.Data
 {
     public class ShaderInfo
     {

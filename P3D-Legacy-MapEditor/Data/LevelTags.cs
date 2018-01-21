@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace P3D_Legacy.MapEditor.Data
+namespace P3D.Legacy.MapEditor.Data
 {
     public class LevelTags : Dictionary<string, object>
     {

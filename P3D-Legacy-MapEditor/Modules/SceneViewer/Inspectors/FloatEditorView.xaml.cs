@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Inspectors
+namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Inspectors
 {
     /// <summary>
     /// Interaction logic for Page1.xaml

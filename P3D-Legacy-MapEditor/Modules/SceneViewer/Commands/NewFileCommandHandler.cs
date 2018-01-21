@@ -10,10 +10,10 @@ using Gemini.Framework.Services;
 using Gemini.Framework.Threading;
 using Gemini.Modules.Shell.Commands;
 
-using P3D_Legacy.MapEditor.Modules.SceneViewer.ViewModels;
-using P3D_Legacy.MapEditor.Properties;
+using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
+using P3D.Legacy.MapEditor.Properties;
 
-namespace P3D_Legacy.MapEditor.Modules.SceneViewer.Commands
+namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Commands
 {
     [CommandHandler]
     public class NewFileCommandHandler : ICommandListHandler<NewFileCommandListDefinition>
