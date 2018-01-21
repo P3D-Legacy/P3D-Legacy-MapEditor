@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
+
 using Gemini.Modules.Inspector;
+
 using P3D.Legacy.MapEditor.Modules.SceneViewer.Inspectors;
 
 namespace P3D.Legacy.MapEditor.Modules.SceneViewer

@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 using P3D.Legacy.MapEditor.Data;
 using P3D.Legacy.MapEditor.Data.Models;
+using P3D.Legacy.MapEditor.Data.World;
+using P3D.Legacy.MapEditor.Utils;
 
 namespace P3D.Legacy.MapEditor.World
 {
@@ -144,44 +146,44 @@ namespace P3D.Legacy.MapEditor.World
             return lightType;
         }
 
-        public void SetWeather(BasicEffect effect, WeatherEnum weather)
+        public void SetWeather(BasicEffect effect, Weather weather)
         {
             switch (weather)
             {
-                case WeatherEnum.Clear:
+                case Weather.Clear:
                     effect.DiffuseColor = new Vector3(1);
                     break;
 
-                case WeatherEnum.Rain:
-                case WeatherEnum.Thunderstorm:
+                case Weather.Rain:
+                case Weather.Thunderstorm:
                     effect.DiffuseColor = new Vector3(0.4f, 0.4f, 0.7f);
                     break;
 
-                case WeatherEnum.Snow:
+                case Weather.Snow:
                     effect.DiffuseColor = new Vector3(0.8f);
                     break;
 
-                case WeatherEnum.Underwater:
+                case Weather.Underwater:
                     effect.DiffuseColor = new Vector3(0.1f, 0.3f, 0.9f);
                     break;
 
-                case WeatherEnum.Sunny:
+                case Weather.Sunny:
                     effect.DiffuseColor = new Vector3(1.6f, 1.3f, 1.3f);
                     break;
 
-                case WeatherEnum.Fog:
+                case Weather.Fog:
                     effect.DiffuseColor = new Vector3(0.5f, 0.5f, 0.6f);
                     break;
 
-                case WeatherEnum.Sandstorm:
+                case Weather.Sandstorm:
                     effect.DiffuseColor = new Vector3(0.8f, 0.5f, 0.2f);
                     break;
 
-                case WeatherEnum.Ash:
+                case Weather.Ash:
                     effect.DiffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
                     break;
 
-                case WeatherEnum.Blizzard:
+                case Weather.Blizzard:
                     effect.DiffuseColor = new Vector3(0.6f, 0.6f, 0.6f);
                     break;
             }

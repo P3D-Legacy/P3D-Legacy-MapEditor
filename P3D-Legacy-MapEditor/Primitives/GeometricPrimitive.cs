@@ -7,11 +7,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using P3D.Legacy.MapEditor.Data;
+
+using P3D.Legacy.MapEditor.Data.Vertices;
 
 namespace P3D.Legacy.MapEditor.Primitives
 {

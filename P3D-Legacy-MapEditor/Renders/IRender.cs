@@ -1,7 +1,6 @@
-﻿using System.Windows.Input;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Renders
+namespace P3D.Legacy.MapEditor.Renders
 {
     public interface IRender
     {

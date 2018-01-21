@@ -2,11 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+
 using Caliburn.Micro;
+
 using Gemini.Framework.Commands;
 using Gemini.Framework.Services;
 using Gemini.Modules.Shell.Commands;
+
 using Microsoft.Win32;
+
 using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 
 namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Commands

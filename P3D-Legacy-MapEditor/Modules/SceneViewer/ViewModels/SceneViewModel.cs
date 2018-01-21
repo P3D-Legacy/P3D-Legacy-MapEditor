@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 using P3D.Legacy.MapEditor.Data;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.Views;
 using P3D.Legacy.MapEditor.Properties;
-using P3D.Legacy.MapEditor.World;
+using P3D.Legacy.MapEditor.Utils;
 
 namespace P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels
 {
@@ -24,32 +24,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels
         private ISceneView _sceneView;
 
         public override bool ShouldReopenOnStart => true;
-
-        private Vector3 _cameraPosition;
-	    public Vector3 CameraPosition
-	    {
-            get => _cameraPosition;
-	        set
-            {
-                _cameraPosition = value;
-                NotifyOfPropertyChange(() => CameraPosition);
-
-                _sceneView?.Invalidate();
-            }
-	    }
-
-        private float _cameraMoveSpeed = 30f;
-        public float CameraMoveSpeed
-        {
-            get => _cameraMoveSpeed;
-            set
-            {
-                _cameraMoveSpeed = value;
-                NotifyOfPropertyChange(() => CameraMoveSpeed);
-
-                _sceneView?.Invalidate();
-            }
-        }
 
         public IEnumerable<EditorFileType> FileTypes
         {

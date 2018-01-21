@@ -3,7 +3,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace P3D.Legacy.MapEditor.Data.Models
+namespace P3D.Legacy.MapEditor.Utils
 {
     /// <summary>
     /// Based on http://jakepoz.com/jake_poznanski__background_load_xna.html 

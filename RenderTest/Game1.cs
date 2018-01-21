@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using P3D.Legacy.MapEditor.Modules.SceneViewer.Renders;
+using P3D.Legacy.MapEditor.Renders;
 using P3D.Legacy.MapEditor.Utils;
 using P3D.Legacy.MapEditor.World;
 

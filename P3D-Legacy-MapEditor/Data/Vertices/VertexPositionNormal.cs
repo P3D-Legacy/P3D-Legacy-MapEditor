@@ -8,7 +8,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace P3D.Legacy.MapEditor.Primitives
+namespace P3D.Legacy.MapEditor.Data.Vertices
 {
     /// <summary>
     /// Custom vertex type for vertices that have just a

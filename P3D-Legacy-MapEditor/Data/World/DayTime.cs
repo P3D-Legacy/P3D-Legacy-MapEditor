@@ -1,4 +1,4 @@
-﻿namespace P3D.Legacy.MapEditor.World
+﻿namespace P3D.Legacy.MapEditor.Data.World
 {
     public enum DayTime
     {

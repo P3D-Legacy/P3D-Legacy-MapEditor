@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
 using P3D.Legacy.MapEditor.Data;
+using P3D.Legacy.MapEditor.Data.World;
 using P3D.Legacy.MapEditor.Utils;
 using P3D.Legacy.MapEditor.World;
 
-namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Renders
+namespace P3D.Legacy.MapEditor.Renders
 {
     public class Render : IRender
     {
@@ -36,7 +37,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Renders
             BasicEffect.FogEnabled = false;
 
             Level.UpdateLighting(BasicEffect);
-            Level.SetWeather(BasicEffect, WeatherEnum.Clear);
+            Level.SetWeather(BasicEffect, Weather.Clear);
             /*
             BasicEffect.EnableDefaultLighting();
             BasicEffect.AmbientLightColor = new Vector3(0.1f);
@@ -68,9 +69,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Renders
                 }
             }
 
-            //BasicEffect.LightingEnabled = false;
-            //BasicEffect.TextureEnabled = false;
-            //BasicEffect.VertexColorEnabled = true;
 
             if(model == null)
                 return;

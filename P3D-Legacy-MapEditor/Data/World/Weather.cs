@@ -1,6 +1,6 @@
-﻿namespace P3D.Legacy.MapEditor.World
+﻿namespace P3D.Legacy.MapEditor.Data.World
 {
-    public enum WeatherEnum
+    public enum Weather
     {
         Clear = 0,
         Rain = 1,

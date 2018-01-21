@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace P3D.Legacy.MapEditor.Data.Models
+namespace P3D.Legacy.MapEditor.Utils
 {
     public class BoundingBoxBuffers
     {

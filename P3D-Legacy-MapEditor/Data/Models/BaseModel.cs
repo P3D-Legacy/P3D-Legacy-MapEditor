@@ -10,7 +10,7 @@ using P3D.Legacy.MapEditor.Data.Models.Cliffs;
 using P3D.Legacy.MapEditor.Data.Models.Other;
 using P3D.Legacy.MapEditor.Data.Models.Steps;
 using P3D.Legacy.MapEditor.Data.Models._2D;
-using P3D.Legacy.MapEditor.Primitives;
+using P3D.Legacy.MapEditor.Data.Vertices;
 using P3D.Legacy.MapEditor.Utils;
 using P3D.Legacy.MapEditor.World;
 
@@ -288,7 +288,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
                 if (!dict.ContainsKey(triangle.TextureKey))
                 {
                     if (!TextureHandler.HasCroppedTexture(triangle.TextureKey))
-                        TextureHandler.AddCroppedTexture(triangle.TextureKey, TextureHelper.CropTexture(triangle.OriginalTexture, triangle.OriginalTextureRectangle));
+                        TextureHandler.AddCroppedTexture(triangle.TextureKey, TextureHandler.CropTexture(triangle.OriginalTexture, triangle.OriginalTextureRectangle));
 
                     dict.Add(triangle.TextureKey, new TextureInfo()
                     {

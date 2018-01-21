@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
+
 using P3D.Legacy.MapEditor.Data;
 
-namespace P3D.Legacy.MapEditor.World
+namespace P3D.Legacy.MapEditor.Utils
 {
     public class LevelLoader
     {

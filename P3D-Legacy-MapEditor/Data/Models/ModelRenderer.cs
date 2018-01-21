@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework.Graphics;
-using P3D.Legacy.MapEditor.Primitives;
+
+using P3D.Legacy.MapEditor.Data.Vertices;
 using P3D.Legacy.MapEditor.World;
 
 namespace P3D.Legacy.MapEditor.Data.Models

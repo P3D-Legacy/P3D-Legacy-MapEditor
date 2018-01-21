@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
+
 using Caliburn.Micro;
+
 using Gemini.Modules.MonoGame.Controls;
 using Gemini.Modules.Output;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using P3D.Legacy.MapEditor.Modules.SceneViewer.Renders;
+
 using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
+using P3D.Legacy.MapEditor.Renders;
 using P3D.Legacy.MapEditor.Utils;
 
 namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views

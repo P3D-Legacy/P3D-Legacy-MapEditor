@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using Microsoft.Xna.Framework;
-using P3D.Legacy.MapEditor.Data;
-using Color = Microsoft.Xna.Framework.Color;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
-namespace P3D.Legacy.MapEditor.World
+using Microsoft.Xna.Framework;
+
+using P3D.Legacy.MapEditor.Data;
+using P3D.Legacy.MapEditor.World;
+
+namespace P3D.Legacy.MapEditor.Utils
 {
     public static class TagsLoader
     {
@@ -19,7 +20,7 @@ namespace P3D.Legacy.MapEditor.World
             var posList = tags.GetTag<int[]>("Position");
             floorInfo.Position = new Vector3(posList[0], posList[1], posList[2]);
             floorInfo.TexturePath = tags.GetTag<string>("TexturePath");
-            floorInfo.TextureRectangles = new [] { tags.GetTag<Rectangle>("Texture") };
+            floorInfo.TextureRectangles = new [] { tags.GetTag<Microsoft.Xna.Framework.Rectangle>("Texture") };
 
             if (tags.TagExists("Visible"))
                 floorInfo.Visible = tags.GetTag<bool>("Visible");
@@ -27,7 +28,7 @@ namespace P3D.Legacy.MapEditor.World
             if (tags.TagExists("Shader"))
             {
                 var shaderList = tags.GetTag<float[]>("Shader");
-                floorInfo.Shader = new Color(shaderList[0], shaderList[1], shaderList[2]);
+                floorInfo.Shader = new Microsoft.Xna.Framework.Color(shaderList[0], shaderList[1], shaderList[2]);
             }
 
             if (tags.TagExists("Remove"))
@@ -114,12 +115,12 @@ namespace P3D.Legacy.MapEditor.World
 
             npcInfo.Movement = tags.GetTag<string>("Movement");
 
-            npcInfo.MoveRectangles = tags.GetTag<Rectangle[]>("MoveRectangles");
+            npcInfo.MoveRectangles = tags.GetTag<Microsoft.Xna.Framework.Rectangle[]>("MoveRectangles");
 
             if (tags.TagExists("Shader"))
             {
                 var shaderList = tags.GetTag<float[]>("Shader");
-                npcInfo.Shader = new Color(shaderList[0], shaderList[1], shaderList[2]);
+                npcInfo.Shader = new Microsoft.Xna.Framework.Color(shaderList[0], shaderList[1], shaderList[2]);
             }
 
             if (tags.TagExists("AnimateIdle"))
@@ -170,7 +171,7 @@ namespace P3D.Legacy.MapEditor.World
             backdropInfo.BackdropType = tags.GetTag<string>("Type");
 
             backdropInfo.TexturePath = tags.GetTag<string>("TexturePath");
-            backdropInfo.TextureRectangle = tags.GetTag<Rectangle>("Texture");
+            backdropInfo.TextureRectangle = tags.GetTag<Microsoft.Xna.Framework.Rectangle>("Texture");
 
             if (tags.TagExists("Trigger"))
                 backdropInfo.Trigger = tags.GetTag<string>("Trigger");
@@ -232,7 +233,7 @@ namespace P3D.Legacy.MapEditor.World
             entityInfo.Position = new Vector3(posList[0], posList[1], posList[2]);
 
             entityInfo.TexturePath = tags.GetTag<string>("TexturePath");
-            entityInfo.TextureRectangles = tags.GetTag<Rectangle[]>("Textures");
+            entityInfo.TextureRectangles = tags.GetTag<Microsoft.Xna.Framework.Rectangle[]>("Textures");
             entityInfo.TextureIndexList = tags.GetTag<int[]>("TextureIndex");
 
 
@@ -259,7 +260,7 @@ namespace P3D.Legacy.MapEditor.World
             if (tags.TagExists("Shader"))
             {
                 var shaderList = tags.GetTag<float[]>("Shader");
-                entityInfo.Shader = new Color(shaderList[0], shaderList[1], shaderList[2]);
+                entityInfo.Shader = new Microsoft.Xna.Framework.Color(shaderList[0], shaderList[1], shaderList[2]);
             }
 
             if (tags.TagExists("RotationXYZ"))

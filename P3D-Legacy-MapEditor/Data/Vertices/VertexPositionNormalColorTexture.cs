@@ -3,7 +3,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace P3D.Legacy.MapEditor.Primitives
+namespace P3D.Legacy.MapEditor.Data.Vertices
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct VertexPositionNormalColorTexture : IVertexType
