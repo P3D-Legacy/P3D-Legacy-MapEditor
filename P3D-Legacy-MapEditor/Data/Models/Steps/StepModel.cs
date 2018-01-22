@@ -1,16 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace P3D.Legacy.MapEditor.Data.Models.Steps
+namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class StepModel : BaseModel
+    public class StepModel : BaseModel<StepModel>
     {
         public override int ID => 7;
 
         public StepModel(EntityInfo entity, GraphicsDevice graphicsDevice) : base(entity, graphicsDevice)
         {
             if (ModelVertices.Count > 0)
+            {
+                Setup();
                 return;
+            }
 
             ModelVertices.Add(new VertexPositionNormalTexture(new Vector3(-0.5f, -0.5f, 0.5f), new Vector3(0, 0, 1), new Vector2(0.0f, 1.0f))); //h
             ModelVertices.Add(new VertexPositionNormalTexture(new Vector3(-0.5f, -0.25f, 0.5f), new Vector3(0, 0, 1), new Vector2(0.0f, 0.0f))); //e

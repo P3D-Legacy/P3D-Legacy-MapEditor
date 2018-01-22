@@ -146,6 +146,7 @@
     <Compile Include="Data\Models\2D\CrossModel.cs" />
     <Compile Include="Data\Models\2D\DoubleFloorModel.cs" />
     <Compile Include="Data\Models\2D\FloorModel.cs" />
+    <Compile Include="Data\Models\BaseModelListRenderer.cs" />
     <Compile Include="Data\Models\Blocks\BlockModel.cs" />
     <Compile Include="Data\Models\Blocks\CornerModel.cs" />
     <Compile Include="Data\Models\Blocks\CubeModel.cs" />
@@ -153,8 +154,9 @@
     <Compile Include="Data\Models\Blocks\PyramidModel.cs" />
     <Compile Include="Data\Models\Blocks\SlideModel.cs" />
     <Compile Include="Data\Models\Blocks\StairsModel.cs" />
+    <Compile Include="Data\Models\LevelRenderer.cs" />
     <Compile Include="Utils\BoundingBoxBorderDrawer.cs" />
-    <Compile Include="Data\Models\ModelRenderer.cs" />
+    <Compile Include="Data\Models\BaseVertexRenderer.cs" />
     <Compile Include="Utils\TextureHandler.cs" />
     <Compile Include="Data\Vertices\VertexPositionNormalColorTexture.cs" />
     <Compile Include="Utils\Camera3DMonoGame.cs" />

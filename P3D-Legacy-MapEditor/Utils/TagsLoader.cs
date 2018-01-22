@@ -201,7 +201,7 @@ namespace P3D.Legacy.MapEditor.Utils
             if (tags.TagExists("Fill"))
                 fill = tags.GetTag<bool>("Fill");
 
-            var steps = new Vector3(1, 1, 1);
+            var steps = Vector3.One;
             if (tags.TagExists("Steps"))
             {
                 var stepList = tags.GetTag<float[]>("Steps");
@@ -214,7 +214,7 @@ namespace P3D.Legacy.MapEditor.Utils
                 return LoadEntity(tags, new Vector3(sizeList[0], 1, sizeList[1]), fill, steps);
         }
 
-        public static IList<EntityInfo> LoadEntity(LevelTags tags) => LoadEntity(tags, Vector3.Zero, false, Vector3.Zero);
+        public static IList<EntityInfo> LoadEntity(LevelTags tags) => LoadEntity(tags, Vector3.One, false, Vector3.One);
         public static IList<EntityInfo> LoadEntity(LevelTags tags, Vector3 size, bool fill, Vector3 steps)
         {
             var entityInfo = new EntityInfo();
@@ -278,20 +278,35 @@ namespace P3D.Legacy.MapEditor.Utils
             if (tags.TagExists("Opacity"))
                 entityInfo.Opacity = tags.GetTag<float>("Opacity");
 
-            if (fill || entityInfo.Size.X > 1 || entityInfo.Size.Y > 1 || entityInfo.Size.Z > 1)
+            //continue;
+            for (var x = 0; x < entityInfo.Size.X; x += (int) entityInfo.Steps.X)
+            for (var y = 0; y < entityInfo.Size.Y; y += (int) entityInfo.Steps.Y)
+            for (var z = 0; z < entityInfo.Size.Z; z += (int) entityInfo.Steps.Z)
             {
-                //continue;
-                for (int x = 0; x < entityInfo.Size.X; x++)
-                for (int y = 0; y < entityInfo.Size.Y; y++)
-                for (int z = 0; z < entityInfo.Size.Z; z++)
+                bool doAdd = false;
+
+                if (!fill)
+                {
+                    if (x == 0 || z == 0 || z == size.Z - 1 || x == size.X - 1)
+                        doAdd = true;
+                }
+                else
+                    doAdd = true;
+
+                if (!string.IsNullOrEmpty(entityInfo.SeasonToggle))
+                {
+                    // TODO: SeasonToggle should be handled not here
+                }
+
+                if (doAdd)
                 {
                     var ent1 = entityInfo.ShallowCopy();
                     ent1.Position += new Vector3(x, y, z);
                     list.Add(ent1);
                 }
             }
-            else
-                list.Add(entityInfo);
+
+            list.Add(entityInfo);
 
             return list;
         }

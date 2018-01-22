@@ -18,6 +18,7 @@ namespace P3D.Legacy.MapEditor.World
         public bool IsDark { get; set; }
 
         private LevelInfo LevelInfo { get; }
+        private LevelRenderer LevelRenderer { get; }
 
         public List<BaseModel> Models { get; } = new List<BaseModel>();
 
@@ -27,6 +28,7 @@ namespace P3D.Legacy.MapEditor.World
         public Level(LevelInfo levelInfo, GraphicsDevice graphicsDevice)
         {
             LevelInfo = levelInfo;
+            LevelRenderer = new LevelRenderer();
 
             DayCycleTexture = TextureHandler.LoadTexture(graphicsDevice, "C:\\GitHub\\Maps\\YourRoom\\textures\\daycycle.png");
             SetLastColor();
@@ -64,8 +66,9 @@ namespace P3D.Legacy.MapEditor.World
                 Models.Add(BaseModel.GetModelByEntityInfo(entity, graphicsDevice));
             }
 
-
-            BaseModel.SetupStatic(graphicsDevice);
+            LevelRenderer.HandleModels(Models);
+            LevelRenderer.Setup(graphicsDevice);
+            //BaseModel.SetupStatic(graphicsDevice);
         }
 
         public void UpdateLighting(BasicEffect effect)
@@ -246,12 +249,13 @@ namespace P3D.Legacy.MapEditor.World
 
         public void Draw(BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
         {
-            ModelRenderer.DrawCalls = 0;
+            BaseVertexRenderer.DrawCalls = 0;
 
-            BaseModel.DrawStatic(this, basicEffect, alphaTestEffect);
+            LevelRenderer.Draw(this, basicEffect, alphaTestEffect);
+            //BaseModel.DrawStatic(this, basicEffect, alphaTestEffect);
 
-            foreach (var model in Models)
-                model.Draw(this, basicEffect);
+            //foreach (var model in Models)
+            //    model.Draw(this, basicEffect);
         }
     }
 }

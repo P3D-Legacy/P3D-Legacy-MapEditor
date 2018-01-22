@@ -72,9 +72,10 @@ namespace RenderTest
 
             Components.Add(new DebugComponent(this));
 
-            var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
+            //var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
             //var path = "C:\\GitHub\\Maps\\YourRoom\\yourroom.dat";
             //var path = "C:\\GitHub\\Maps\\UnderwaterCave\\main.dat";
+            var path = "C:\\GitHub\\Maps\\Kolben\\lounge.dat";
             var text = File.ReadAllText(path);
             var levelInfo = LevelLoader.Load(text, path);
             Camera = new Camera3DMonoGame(GraphicsDevice);

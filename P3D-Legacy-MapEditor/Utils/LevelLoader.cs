@@ -144,8 +144,16 @@ namespace P3D.Legacy.MapEditor.Utils
             tag = tag.Remove(0, 1);
             tag = tag.Remove(tag.Length - 1, 1);
 
+            var index1 = tag.IndexOf("{", StringComparison.Ordinal) - 1;
+            if (index1 > 0)
+                tagName = tag.Remove(index1).Remove(0, 1).ToLowerInvariant();
+            var index2 = tag.IndexOf("{", StringComparison.Ordinal);
+            if (index2 > 0)
+                tagContent = tag.Remove(0, index2);
+            /*
             tagName = tag.Remove(tag.IndexOf("{", StringComparison.Ordinal) - 1).Remove(0, 1).ToLowerInvariant();
             tagContent = tag.Remove(0, tag.IndexOf("{", StringComparison.Ordinal));
+            */
 
             var contentRows = tagContent.Split('}');
             for (var i = 0; i < contentRows.Length; i++)

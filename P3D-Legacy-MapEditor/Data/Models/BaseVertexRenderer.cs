@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework.Graphics;
 
 using P3D.Legacy.MapEditor.Data.Vertices;
@@ -8,7 +7,7 @@ using P3D.Legacy.MapEditor.World;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class ModelRenderer
+    public abstract class BaseVertexRenderer
     {
         public static int DrawCalls = 0;
 
@@ -20,36 +19,6 @@ namespace P3D.Legacy.MapEditor.Data.Models
         public VertexBuffer StaticVertexBuffer;
         public IndexBuffer StaticIndexBuffer;
 
-        private DepthStencilState StencilWriteOnly { get; } = new DepthStencilState()
-        {
-            DepthBufferEnable = true,
-            DepthBufferWriteEnable = true,
-            //CounterClockwiseStencilFunction = CompareFunction.Always,
-            StencilFunction = CompareFunction.Always,
-            StencilPass = StencilOperation.Replace,
-            //StencilFail = StencilOperation.IncrementSaturation,
-            //StencilPass = StencilOperation.IncrementSaturation,
-            //CounterClockwiseStencilFail = StencilOperation.IncrementSaturation,
-            //CounterClockwiseStencilPass = StencilOperation.IncrementSaturation,
-            ReferenceStencil = 0,
-            StencilEnable = true,
-            //StencilMask = 0,
-        };
-        private DepthStencilState StencilReadOnly { get; } = new DepthStencilState()
-        {
-            DepthBufferEnable = true,
-            DepthBufferWriteEnable = false,
-            //CounterClockwiseStencilFunction = CompareFunction.Less,
-            StencilFunction = CompareFunction.Equal,
-            StencilPass = StencilOperation.Keep,
-            //StencilFunction = CompareFunction.Less,
-            //StencilFail = StencilOperation.Keep,
-            //StencilPass = StencilOperation.Keep,
-            //CounterClockwiseStencilFail = StencilOperation.Keep,
-            //CounterClockwiseStencilPass = StencilOperation.Keep,
-            ReferenceStencil = 0,
-            StencilEnable = true
-        };
 
         public void Setup(GraphicsDevice graphicsDevice)
         {
@@ -59,8 +28,11 @@ namespace P3D.Legacy.MapEditor.Data.Models
             StaticIndexBuffer = new IndexBuffer(graphicsDevice, typeof(int), Vertices.Count, BufferUsage.WriteOnly);
             StaticIndexBuffer.SetData(Indices.ToArray());
         }
+    }
 
-        public void DrawOpaque(Level level, BasicEffect basicEffect, CullMode cullMode = CullMode.CullClockwiseFace)
+    public class OpaqueVertexRenderer : BaseVertexRenderer
+    {
+        public void Draw(Level level, BasicEffect basicEffect, CullMode cullMode = CullMode.CullClockwiseFace)
         {
             var graphicsDevice = basicEffect.GraphicsDevice;
 
@@ -104,8 +76,41 @@ namespace P3D.Legacy.MapEditor.Data.Models
             graphicsDevice.BlendState = blendState;
             graphicsDevice.DepthStencilState = depthStencilState;
         }
+    }
+    public class TransparentVertexRenderer : BaseVertexRenderer
+    {
+        private DepthStencilState StencilWriteOnly { get; } = new DepthStencilState()
+        {
+            DepthBufferEnable = true,
+            DepthBufferWriteEnable = true,
+            //CounterClockwiseStencilFunction = CompareFunction.Always,
+            StencilFunction = CompareFunction.Always,
+            StencilPass = StencilOperation.Replace,
+            //StencilFail = StencilOperation.IncrementSaturation,
+            //StencilPass = StencilOperation.IncrementSaturation,
+            //CounterClockwiseStencilFail = StencilOperation.IncrementSaturation,
+            //CounterClockwiseStencilPass = StencilOperation.IncrementSaturation,
+            ReferenceStencil = 0,
+            StencilEnable = true,
+            //StencilMask = 0,
+        };
+        private DepthStencilState StencilReadOnly { get; } = new DepthStencilState()
+        {
+            DepthBufferEnable = true,
+            DepthBufferWriteEnable = false,
+            //CounterClockwiseStencilFunction = CompareFunction.Less,
+            StencilFunction = CompareFunction.Equal,
+            StencilPass = StencilOperation.Keep,
+            //StencilFunction = CompareFunction.Less,
+            //StencilFail = StencilOperation.Keep,
+            //StencilPass = StencilOperation.Keep,
+            //CounterClockwiseStencilFail = StencilOperation.Keep,
+            //CounterClockwiseStencilPass = StencilOperation.Keep,
+            ReferenceStencil = 0,
+            StencilEnable = true
+        };
 
-        public void DrawTransparent(Level level, BasicEffect basicEffect, AlphaTestEffect alphaEffect, CullMode cullMode = CullMode.CullClockwiseFace)
+        public void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaEffect, CullMode cullMode = CullMode.CullClockwiseFace)
         {
             // You could (at higher GPU cost) do a two pass render with stencil: 
             // first AlphaTestEffect with color writes disabled to draw a mask 
@@ -161,7 +166,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, StaticVertexBuffer.VertexCount / 3);
                 DrawCalls++;
             }
-            
+
             graphicsDevice.RasterizerState = rasterizerState;
             graphicsDevice.BlendState = blendState;
             graphicsDevice.DepthStencilState = depthStencilState;

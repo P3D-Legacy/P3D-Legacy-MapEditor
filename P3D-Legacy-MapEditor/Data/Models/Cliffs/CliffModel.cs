@@ -1,16 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace P3D.Legacy.MapEditor.Data.Models.Cliffs
+namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class CliffModel : BaseModel
+    public class CliffModel : BaseModel<CliffModel>
     {
         public override int ID => 9;
 
         public CliffModel(EntityInfo entity, GraphicsDevice graphicsDevice) : base(entity, graphicsDevice)
         {
             if (ModelVertices.Count > 0)
+            {
+                Setup();
                 return;
+            }
 
             ModelVertices.Add(new VertexPositionNormalTexture(new Vector3(-0.5f, -0.5f, 0.5f), Vector3.Up, new Vector2(0, 1)));
             ModelVertices.Add(new VertexPositionNormalTexture(new Vector3(-0.5f, -0.5f, -0.5f), Vector3.Up, new Vector2(0, 0)));
