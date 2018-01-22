@@ -244,14 +244,14 @@ namespace P3D.Legacy.MapEditor.World
             }
         }
 
-        public void Draw(BasicEffect effect, Vector3 cameraPosition)
+        public void Draw(BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
         {
             ModelRenderer.DrawCalls = 0;
 
-            BaseModel.DrawStatic(this, effect);
+            BaseModel.DrawStatic(this, basicEffect, alphaTestEffect);
 
             foreach (var model in Models)
-                model.Draw(this, effect);
+                model.Draw(this, basicEffect);
         }
     }
 }

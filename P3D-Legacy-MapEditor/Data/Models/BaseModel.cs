@@ -16,12 +16,40 @@ using P3D.Legacy.MapEditor.World;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
+    public class StaticModelHandler
+    {
+        public List<BaseModel> TotalStaticModels { get; } = new List<BaseModel>();
+
+        private ModelRenderer StaticOpaqueRenderer { get; }
+        private ModelRenderer StaticTransparentRenderer { get; }
+
+
+    }
+
+    public class DynamicModelHandler
+    {
+        public List<BaseModel> TotalDynamicModels { get; } = new List<BaseModel>();
+
+        private List<ModelRenderer> DynamicOpaqueRenderers { get; } = new List<ModelRenderer>();
+        private List<ModelRenderer> DynamicTransparentRenderers { get; } = new List<ModelRenderer>();
+
+        public void Draw(Level level, Effect effect)
+        {
+            // Render opaque models
+            // Sort transparent vertices
+            //
+            //
+        }
+    }
+
     public abstract class BaseModel
     {
+        public static DynamicModelHandler DynamicModelHandler;
+
         public static List<BaseModel> TotalStaticModels { get; } = new List<BaseModel>();
-        
-        protected static ModelRenderer StaticRendererOpaque;
-        protected static ModelRenderer StaticRendererTransparent;
+
+        protected static ModelRenderer StaticOpaqueRenderer;
+        protected static ModelRenderer StaticTransparentRenderer;
 
 
         protected List<VertexPositionNormalTexture> ModelVertices { get; } = new List<VertexPositionNormalTexture>();
@@ -202,8 +230,8 @@ namespace P3D.Legacy.MapEditor.Data.Models
         public static void SetupStatic(GraphicsDevice graphicsDevice)
         {
             var atlas = SetupTextureAtlas(graphicsDevice);
-            StaticRendererOpaque = new ModelRenderer() { Atlas = atlas };
-            StaticRendererTransparent = new ModelRenderer() { Atlas = atlas };
+            StaticOpaqueRenderer = new ModelRenderer() { Atlas = atlas };
+            StaticTransparentRenderer = new ModelRenderer() { Atlas = atlas };
 
             foreach (var staticModel in TotalStaticModels)
             {
@@ -235,18 +263,18 @@ namespace P3D.Legacy.MapEditor.Data.Models
 
                         if (staticModel.HasTransparentPixels)
                         {
-                            StaticRendererTransparent.Vertices.Add(vertexNew);
+                            StaticTransparentRenderer.Vertices.Add(vertexNew);
                         }
                         else
                         {
-                            StaticRendererOpaque.Vertices.Add(vertexNew);
+                            StaticOpaqueRenderer.Vertices.Add(vertexNew);
                         }
                     }
                 }
             }
 
-            StaticRendererOpaque.Setup(graphicsDevice);
-            StaticRendererTransparent.Setup(graphicsDevice);
+            StaticOpaqueRenderer.Setup(graphicsDevice);
+            StaticTransparentRenderer.Setup(graphicsDevice);
         }
 
         private void BuildBoundingBox()
@@ -329,20 +357,41 @@ namespace P3D.Legacy.MapEditor.Data.Models
         }
 
         public void Draw(Level level, Effect effect) { }
-        public static void DrawStatic(Level level, BasicEffect effect)
+        public static void DrawStatic(Level level, BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
         {
-            var effectDiffuseColor = effect.DiffuseColor;
+            var effectDiffuseColor = basicEffect.DiffuseColor;
+            var effect1DiffuseColor = alphaTestEffect.DiffuseColor;
 
             // Alpha should be moved to shader
-            effect.Alpha = 1f;
+            basicEffect.Alpha = 1f;
+            alphaTestEffect.Alpha = 1f;
 
             if (level.IsDark)
-                effect.DiffuseColor *= new Vector3(0.5f, 0.5f, 0.5f);
+            {
+                basicEffect.DiffuseColor *= new Vector3(0.5f, 0.5f, 0.5f);
+                alphaTestEffect.DiffuseColor *= new Vector3(0.5f, 0.5f, 0.5f);
+            }
 
-            StaticRendererOpaque.Draw(level, effect);
-            StaticRendererTransparent.Draw(level, effect);
+            StaticOpaqueRenderer.DrawOpaque(level, basicEffect, CullMode.CullClockwiseFace);
+            StaticOpaqueRenderer.DrawOpaque(level, basicEffect, CullMode.CullCounterClockwiseFace);
+            StaticTransparentRenderer.DrawTransparent(level, basicEffect, alphaTestEffect, CullMode.CullClockwiseFace);
+            StaticTransparentRenderer.DrawTransparent(level, basicEffect, alphaTestEffect, CullMode.CullCounterClockwiseFace);
 
-            effect.DiffuseColor = effectDiffuseColor;
+            /*
+            // render solid part (CW+CCW)
+            // render back-side transparent part(CCW)
+            // render solid part(CW + CCW)
+            // render front-side transparent part(CW)
+            StaticOpaqueRenderer.DrawOpaque(level, basicEffect, CullMode.CullClockwiseFace);
+            StaticOpaqueRenderer.DrawOpaque(level, basicEffect, CullMode.CullCounterClockwiseFace);
+            StaticTransparentRenderer.DrawTransparent(level, basicEffect, alphaTestEffect, CullMode.CullCounterClockwiseFace);
+            StaticOpaqueRenderer.DrawOpaque(level, basicEffect, CullMode.CullClockwiseFace);
+            StaticOpaqueRenderer.DrawOpaque(level, basicEffect, CullMode.CullCounterClockwiseFace);
+            StaticTransparentRenderer.DrawTransparent(level, basicEffect, alphaTestEffect, CullMode.CullClockwiseFace);
+            */
+
+            basicEffect.DiffuseColor = effectDiffuseColor;
+            alphaTestEffect.DiffuseColor = effect1DiffuseColor;
         }
 
         public void Dispose()

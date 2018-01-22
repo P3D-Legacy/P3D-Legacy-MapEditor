@@ -28,6 +28,7 @@ namespace RenderTest
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             graphics.SynchronizeWithVerticalRetrace = false;
             graphics.ApplyChanges();
             IsFixedTimeStep = false;
@@ -71,8 +72,8 @@ namespace RenderTest
 
             Components.Add(new DebugComponent(this));
 
-            //var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
-            var path = "C:\\GitHub\\Maps\\YourRoom\\yourroom.dat";
+            var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
+            //var path = "C:\\GitHub\\Maps\\YourRoom\\yourroom.dat";
             //var path = "C:\\GitHub\\Maps\\UnderwaterCave\\main.dat";
             var text = File.ReadAllText(path);
             var levelInfo = LevelLoader.Load(text, path);
@@ -128,7 +129,7 @@ namespace RenderTest
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            GraphicsDevice.Clear(ClearOptions.Stencil, Color.Transparent, 0, 0);
 
             Render.Draw(GraphicsDevice);
             // TODO: Add your drawing code here

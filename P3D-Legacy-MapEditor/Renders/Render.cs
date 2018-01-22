@@ -12,6 +12,7 @@ namespace P3D.Legacy.MapEditor.Renders
         private GraphicsDevice GraphicsDevice { get; }
 
         private BasicEffect BasicEffect { get; set; }
+        private AlphaTestEffect AlphaTestEffect { get; set; }
         private Level Level { get; set; }
 
         private Camera Camera { get; set; }
@@ -36,6 +37,14 @@ namespace P3D.Legacy.MapEditor.Renders
             BasicEffect.VertexColorEnabled = true;
             BasicEffect.FogEnabled = false;
 
+            AlphaTestEffect = new AlphaTestEffect(GraphicsDevice);
+            AlphaTestEffect.VertexColorEnabled = true;
+            AlphaTestEffect.FogEnabled = false;
+            //AlphaTestEffect.AlphaFunction = CompareFunction.Equal;
+            //AlphaTestEffect.ReferenceAlpha = 0;
+
+            graphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+
             Level.UpdateLighting(BasicEffect);
             Level.SetWeather(BasicEffect, Weather.Clear);
             /*
@@ -55,9 +64,11 @@ namespace P3D.Legacy.MapEditor.Renders
 
             BasicEffect.View = Camera.View;
             BasicEffect.Projection = Camera.Projection;
+            AlphaTestEffect.View = Camera.View;
+            AlphaTestEffect.Projection = Camera.Projection;
 
 
-            Level?.Draw(BasicEffect, Camera.Position);
+            Level?.Draw(BasicEffect, AlphaTestEffect);
             /*
             BaseModel model = null;
             foreach (var baseModel in BaseModel.TotalStaticModels.Where(m => m.Entity.EntityID != "ScriptBlock"))
