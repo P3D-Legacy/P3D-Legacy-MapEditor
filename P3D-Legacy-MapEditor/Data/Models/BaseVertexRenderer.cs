@@ -11,14 +11,20 @@ namespace P3D.Legacy.MapEditor.Data.Models
     {
         public static int DrawCalls = 0;
 
-        public List<VertexPositionNormalColorTexture> Vertices { get; } = new List<VertexPositionNormalColorTexture>();
-        public List<int> Indices { get; } = new List<int>();
+        public List<VertexPositionNormalColorTexture> Vertices { get; }
+        public List<int> Indices { get; }
 
-        public Texture2D Atlas;
+        public Texture2D Atlas { get; }
 
         public VertexBuffer StaticVertexBuffer;
         public IndexBuffer StaticIndexBuffer;
 
+        protected BaseVertexRenderer(List<VertexPositionNormalColorTexture> vertices, List<int> indices, Texture2D atlas)
+        {
+            Vertices = vertices;
+            Indices = indices;
+            Atlas = atlas;
+        }
 
         public void Setup(GraphicsDevice graphicsDevice)
         {
@@ -32,6 +38,10 @@ namespace P3D.Legacy.MapEditor.Data.Models
 
     public class OpaqueVertexRenderer : BaseVertexRenderer
     {
+        public OpaqueVertexRenderer(List<VertexPositionNormalColorTexture> vertices, List<int> indices, Texture2D atlas) : base(vertices, indices, atlas)
+        {
+        }
+
         public void Draw(Level level, BasicEffect basicEffect, CullMode cullMode = CullMode.CullClockwiseFace)
         {
             var graphicsDevice = basicEffect.GraphicsDevice;
@@ -110,12 +120,17 @@ namespace P3D.Legacy.MapEditor.Data.Models
             StencilEnable = true
         };
 
+        public TransparentVertexRenderer(List<VertexPositionNormalColorTexture> vertices, List<int> indices, Texture2D atlas) : base(vertices, indices, atlas)
+        {
+        }
+
         public void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaEffect, CullMode cullMode = CullMode.CullClockwiseFace)
         {
             // You could (at higher GPU cost) do a two pass render with stencil: 
             // first AlphaTestEffect with color writes disabled to draw a mask 
             // into the stencil buffer, then a second pass with BasicEffect to 
-            //render colors only where that stencil mask allows
+            // render colors only where that stencil mask allows
+            // semi-transparent pixels won't work
 
             var graphicsDevice = basicEffect.GraphicsDevice;
 

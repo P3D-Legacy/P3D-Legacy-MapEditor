@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 using Microsoft.Xna.Framework;
@@ -16,8 +15,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
     {
         public List<BaseModel> Models { get; } = new List<BaseModel>();
 
-
-        private class TextureInfo
+        private class TrianglesWithCroppedTexture
         {
             public List<BaseModel.ModelTriangle> ModelTriangles { get; } = new List<BaseModel.ModelTriangle>();
 
@@ -28,7 +26,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
         public Texture2D SetupTextureAtlas(GraphicsDevice graphicsDevice)
         {
             var triangles = Models.SelectMany(m => m.ModelTriangles).ToList();
-            var dict = new Dictionary<KeyValuePair<string, Rectangle>, TextureInfo>();
+            var dict = new Dictionary<KeyValuePair<string, Rectangle>, TrianglesWithCroppedTexture>();
             foreach (var triangle in triangles)
             {
                 if (!dict.ContainsKey(triangle.TextureKey))
@@ -36,7 +34,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
                     if (!TextureHandler.HasCroppedTexture(triangle.TextureKey))
                         TextureHandler.AddCroppedTexture(triangle.TextureKey, TextureHandler.CropTexture(triangle.OriginalTexture, triangle.OriginalTextureRectangle));
 
-                    dict.Add(triangle.TextureKey, new TextureInfo()
+                    dict.Add(triangle.TextureKey, new TrianglesWithCroppedTexture()
                     {
                         CroppedTexture = TextureHandler.GetCroppedTexture(triangle.TextureKey).Key,
                         HasTransparentPixels = TextureHandler.GetCroppedTexture(triangle.TextureKey).Value
@@ -83,12 +81,9 @@ namespace P3D.Legacy.MapEditor.Data.Models
         public void Setup(GraphicsDevice graphicsDevice)
         {
             var atlas = SetupTextureAtlas(graphicsDevice);
-            //var stream = File.OpenWrite("C://GitHub//Test.png");
-            //atlas.SaveAsPng(stream, atlas.Width, atlas.Height);
-            //stream.Dispose();
-            StaticOpaqueRenderer = new OpaqueVertexRenderer() { Atlas = atlas };
-            StaticTransparentRenderer = new TransparentVertexRenderer() { Atlas = atlas };
 
+            var opaqueVertices = new List<VertexPositionNormalColorTexture>();
+            var transparentVertices = new List<VertexPositionNormalColorTexture>();
             foreach (var staticModel in Models)
             {
                 foreach (var triangle in staticModel.ModelTriangles)
@@ -101,7 +96,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
                     for (int i = 0; i < 3; i++)
                     {
                         var vertex = vertices[i];
-                        //var index = indices[i];
+                        var index = indices[i];
 
                         var position = Vector3.Transform(vertex.Position, staticModel.WorldMatrix);
                         var normal = Vector3.Transform(vertex.Normal, staticModel.RotationMatrix);
@@ -118,31 +113,26 @@ namespace P3D.Legacy.MapEditor.Data.Models
                         var vertexNew = new VertexPositionNormalColorTexture(position, normal, color, textCoord);
 
                         if (staticModel.HasTransparentPixels)
-                            StaticTransparentRenderer.Vertices.Add(vertexNew);
+                            transparentVertices.Add(vertexNew);
                         else
-                            StaticOpaqueRenderer.Vertices.Add(vertexNew);
+                            opaqueVertices.Add(vertexNew);
                     }
                 }
             }
 
+            StaticOpaqueRenderer = new OpaqueVertexRenderer(opaqueVertices, new List<int>(), atlas);
             StaticOpaqueRenderer.Setup(graphicsDevice);
+
+            StaticTransparentRenderer = new TransparentVertexRenderer(transparentVertices, new List<int>(), atlas);
             StaticTransparentRenderer.Setup(graphicsDevice);
         }
 
         public void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
         {
             var basicEffectDiffuseColor = basicEffect.DiffuseColor;
-            var alphaTestEffectDiffuseColor = alphaTestEffect.DiffuseColor;
-
-            // Alpha should be moved to shader
-            basicEffect.Alpha = 1f;
-            alphaTestEffect.Alpha = 1f;
 
             if (level.IsDark)
-            {
                 basicEffect.DiffuseColor *= new Vector3(0.5f, 0.5f, 0.5f);
-                alphaTestEffect.DiffuseColor *= new Vector3(0.5f, 0.5f, 0.5f);
-            }
 
             StaticOpaqueRenderer.Draw(level, basicEffect, CullMode.CullClockwiseFace);
             StaticOpaqueRenderer.Draw(level, basicEffect, CullMode.CullCounterClockwiseFace);
@@ -163,7 +153,6 @@ namespace P3D.Legacy.MapEditor.Data.Models
             */
 
             basicEffect.DiffuseColor = basicEffectDiffuseColor;
-            alphaTestEffect.DiffuseColor = alphaTestEffectDiffuseColor;
         }
     }
 
