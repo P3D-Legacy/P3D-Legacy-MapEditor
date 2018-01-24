@@ -5,15 +5,32 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using P3D.Legacy.MapEditor.Data.Models;
 using P3D.Legacy.MapEditor.Data.Vertices;
 using P3D.Legacy.MapEditor.Utils;
 using P3D.Legacy.MapEditor.World;
 
-namespace P3D.Legacy.MapEditor.Data.Models
+namespace P3D.Legacy.MapEditor.Renders
 {
     public abstract class BaseModelListRenderer
     {
-        public List<BaseModel> Models { get; } = new List<BaseModel>();
+        public static List<BaseModel> TotalModels { get; } = new List<BaseModel>();
+
+        protected List<BaseModel> Models { get; } = new List<BaseModel>();
+
+        public virtual void AddModel(BaseModel model)
+        {
+            Models.Add(model);
+            TotalModels.Add(model);
+        }
+        public virtual void AddModels(List<BaseModel> models)
+        {
+            Models.AddRange(models);
+            TotalModels.AddRange(models);
+        }
+
+        public abstract void Setup(GraphicsDevice graphicsDevice);
+        public abstract void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaTestEffect);
 
         private class TrianglesWithCroppedTexture
         {
@@ -78,7 +95,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
         private OpaqueVertexRenderer StaticOpaqueRenderer { get; set; }
         private TransparentVertexRenderer StaticTransparentRenderer { get; set; }
 
-        public void Setup(GraphicsDevice graphicsDevice)
+        public override void Setup(GraphicsDevice graphicsDevice)
         {
             var atlas = SetupTextureAtlas(graphicsDevice);
 
@@ -99,7 +116,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
                         var index = indices[i];
 
                         var position = Vector3.Transform(vertex.Position, staticModel.WorldMatrix);
-                        var normal = Vector3.Transform(vertex.Normal, staticModel.RotationMatrix);
+                        var normal = Vector3.TransformNormal(vertex.Normal, staticModel.WorldMatrix);
                         var color = staticModel.Entity.Shader;
                         color.A *= (byte) staticModel.Entity.Opacity;
                         var textCoord = new Vector2(
@@ -120,24 +137,30 @@ namespace P3D.Legacy.MapEditor.Data.Models
                 }
             }
 
-            StaticOpaqueRenderer = new OpaqueVertexRenderer(opaqueVertices, new List<int>(), atlas);
-            StaticOpaqueRenderer.Setup(graphicsDevice);
+            if (opaqueVertices.Any())
+            {
+                StaticOpaqueRenderer = new OpaqueVertexRenderer(opaqueVertices, new List<int>(), atlas);
+                StaticOpaqueRenderer.Setup(graphicsDevice);
+            }
 
-            StaticTransparentRenderer = new TransparentVertexRenderer(transparentVertices, new List<int>(), atlas);
-            StaticTransparentRenderer.Setup(graphicsDevice);
+            if (transparentVertices.Any())
+            {
+                StaticTransparentRenderer = new TransparentVertexRenderer(transparentVertices, new List<int>(), atlas);
+                StaticTransparentRenderer.Setup(graphicsDevice);
+            }
         }
 
-        public void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
+        public override void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
         {
             var basicEffectDiffuseColor = basicEffect.DiffuseColor;
 
             if (level.IsDark)
                 basicEffect.DiffuseColor *= new Vector3(0.5f, 0.5f, 0.5f);
 
-            StaticOpaqueRenderer.Draw(level, basicEffect, CullMode.CullClockwiseFace);
-            StaticOpaqueRenderer.Draw(level, basicEffect, CullMode.CullCounterClockwiseFace);
-            StaticTransparentRenderer.Draw(level, basicEffect, alphaTestEffect, CullMode.CullClockwiseFace);
-            StaticTransparentRenderer.Draw(level, basicEffect, alphaTestEffect, CullMode.CullCounterClockwiseFace);
+            StaticOpaqueRenderer?.Draw(level, basicEffect, CullMode.CullClockwiseFace);
+            StaticOpaqueRenderer?.Draw(level, basicEffect, CullMode.CullCounterClockwiseFace);
+            StaticTransparentRenderer?.Draw(level, basicEffect, alphaTestEffect, CullMode.CullClockwiseFace);
+            StaticTransparentRenderer?.Draw(level, basicEffect, alphaTestEffect, CullMode.CullCounterClockwiseFace);
 
             /*
             // render solid part (CW+CCW)
@@ -156,14 +179,17 @@ namespace P3D.Legacy.MapEditor.Data.Models
         }
     }
 
-    public class DynamicModelListRenderer
+    public class DynamicModelListRenderer : BaseModelListRenderer
     {
-        public List<BaseModel> TotalDynamicModels { get; } = new List<BaseModel>();
-
         private List<OpaqueVertexRenderer> DynamicOpaqueRenderers { get; } = new List<OpaqueVertexRenderer>();
         private List<TransparentVertexRenderer> DynamicTransparentRenderers { get; } = new List<TransparentVertexRenderer>();
 
-        public void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
+        public override void Setup(GraphicsDevice graphicsDevice)
+        {
+
+        }
+
+        public override void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
         {
             foreach (var opaqueRenderer in DynamicOpaqueRenderers)
                 opaqueRenderer.Draw(level, basicEffect, CullMode.CullClockwiseFace);

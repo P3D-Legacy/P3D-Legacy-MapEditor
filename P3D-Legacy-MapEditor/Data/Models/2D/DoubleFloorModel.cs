@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class DoubleFloorModel : BaseModel<DoubleFloorModel>
+    public class DoubleFloorModel : BaseModel
     {
         public override int ID => 14;
 

@@ -32,8 +32,8 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 
         public GraphicsDevice GraphicsDevice { get; private set; }
         private SceneViewModel SceneViewModel => (SceneViewModel) DataContext;
-        private IRender CurrentRender { get; set; }
-        private Camera Camera { get; set; }
+        private Render CurrentRender { get; set; }
+        private Camera3DGemini Camera { get; set; }
 
 
         public SceneView()
@@ -65,6 +65,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
             CurrentRender.Initialize(GraphicsDevice);
         }
 
+        private bool once = false;
         /// <summary>
         /// Invoked when our second control is ready to render.
         /// </summary>
@@ -72,6 +73,11 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         {
             e.GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            if (!once)
+            {
+                once = true;
+                Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
+            }
             CurrentRender.Draw(e.GraphicsDevice);
         }
 

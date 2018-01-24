@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using P3D.Legacy.MapEditor.Data.Vertices;
 using P3D.Legacy.MapEditor.World;
 
-namespace P3D.Legacy.MapEditor.Data.Models
+namespace P3D.Legacy.MapEditor.Renders
 {
     public abstract class BaseVertexRenderer
     {
@@ -38,9 +38,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
 
     public class OpaqueVertexRenderer : BaseVertexRenderer
     {
-        public OpaqueVertexRenderer(List<VertexPositionNormalColorTexture> vertices, List<int> indices, Texture2D atlas) : base(vertices, indices, atlas)
-        {
-        }
+        public OpaqueVertexRenderer(List<VertexPositionNormalColorTexture> vertices, List<int> indices, Texture2D atlas) : base(vertices, indices, atlas) { }
 
         public void Draw(Level level, BasicEffect basicEffect, CullMode cullMode = CullMode.CullClockwiseFace)
         {
@@ -50,8 +48,9 @@ namespace P3D.Legacy.MapEditor.Data.Models
             var blendState = graphicsDevice.BlendState;
             var depthStencilState = graphicsDevice.DepthStencilState;
 
+
             graphicsDevice.SetVertexBuffer(StaticVertexBuffer);
-            //graphicsDevice.Indices = StaticIndexBuffer;
+            graphicsDevice.Indices = StaticIndexBuffer;
             graphicsDevice.BlendState = BlendState.Opaque;
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
 
@@ -81,6 +80,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
                 //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, Vertices.Count, 0, Indices.Count / 3);
                 DrawCalls++;
             }
+
 
             graphicsDevice.RasterizerState = rasterizerState;
             graphicsDevice.BlendState = blendState;
@@ -120,9 +120,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
             StencilEnable = true
         };
 
-        public TransparentVertexRenderer(List<VertexPositionNormalColorTexture> vertices, List<int> indices, Texture2D atlas) : base(vertices, indices, atlas)
-        {
-        }
+        public TransparentVertexRenderer(List<VertexPositionNormalColorTexture> vertices, List<int> indices, Texture2D atlas) : base(vertices, indices, atlas) { }
 
         public void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaEffect, CullMode cullMode = CullMode.CullClockwiseFace)
         {
@@ -138,10 +136,9 @@ namespace P3D.Legacy.MapEditor.Data.Models
             var blendState = graphicsDevice.BlendState;
             var depthStencilState = graphicsDevice.DepthStencilState;
 
-            graphicsDevice.SetVertexBuffer(StaticVertexBuffer);
 
-            basicEffect.Texture = Atlas;
-            alphaEffect.Texture = Atlas;
+            graphicsDevice.SetVertexBuffer(StaticVertexBuffer);
+            graphicsDevice.Indices = StaticIndexBuffer;
 
             switch (cullMode)
             {
@@ -157,6 +154,9 @@ namespace P3D.Legacy.MapEditor.Data.Models
                     graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
                     break;
             }
+
+            basicEffect.Texture = Atlas;
+            alphaEffect.Texture = Atlas;
 
             graphicsDevice.DepthStencilState = StencilWriteOnly;
             graphicsDevice.BlendState = new BlendState()
@@ -181,6 +181,7 @@ namespace P3D.Legacy.MapEditor.Data.Models
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, StaticVertexBuffer.VertexCount / 3);
                 DrawCalls++;
             }
+
 
             graphicsDevice.RasterizerState = rasterizerState;
             graphicsDevice.BlendState = blendState;

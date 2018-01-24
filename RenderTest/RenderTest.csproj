@@ -83,6 +83,9 @@
     <None Include="Content\Fonts\PixelUnicode.fnt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\FXAA3.11.mgfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\P3D-Legacy-MapEditor\P3D-Legacy-MapEditor.csproj">

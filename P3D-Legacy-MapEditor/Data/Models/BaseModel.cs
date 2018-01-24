@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using P3D.Legacy.MapEditor.Utils;
 
 namespace P3D.Legacy.MapEditor.Data.Models
@@ -138,20 +138,18 @@ namespace P3D.Legacy.MapEditor.Data.Models
         protected void Setup()
         {
             if (!ModelIndices.Any())
-            {
-                var geometry = new Geometry<VertexPositionNormalTexture>();
-                geometry.AddVertices(ModelVertices.ToArray());
-                ModelIndices.AddRange(geometry.Indices);
-            }
-
+                BuildIndices();
 
             if (Entity is EntityFloorInfo && Entity.TextureIndexList == null)
                 Entity.TextureIndexList = new[] { 0, 0 };
+            else if(Entity.TextureIndexList == null)
+                return;
+
 
             var triangles = ModelVertices.Count / 3;
 
             // if TextureIndex list is smaller than the triangle count, fill them with 0
-            if (Entity.TextureIndexList?.Length < triangles)
+            if (Entity.TextureIndexList.Length < triangles)
             {
                 var newTextureIndexList = new int[triangles];
                 for (var i = 0; i < Entity.TextureIndexList.Length; i++)
@@ -172,7 +170,12 @@ namespace P3D.Legacy.MapEditor.Data.Models
 
             BuildBoundingBox();
         }
-
+        private void BuildIndices()
+        {
+            var geometry = new Geometry<VertexPositionNormalTexture>();
+            geometry.AddVertices(ModelVertices.ToArray());
+            ModelIndices.AddRange(geometry.Indices);
+        }
         private void BuildBoundingBox()
         {
             // Create initial variables to hold min and max xyz values for the mesh
@@ -193,13 +196,6 @@ namespace P3D.Legacy.MapEditor.Data.Models
 
             // Create the bounding box
             BoundingBox = new BoundingBox(meshMin, meshMax);
-        }
-    }
-
-    public abstract class BaseModel<T> : BaseModel where T : BaseModel
-    {
-        protected BaseModel(EntityInfo entity, GraphicsDevice graphicsDevice) : base(entity, graphicsDevice)
-        {
         }
     }
 }

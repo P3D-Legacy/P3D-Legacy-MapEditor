@@ -1,16 +1,16 @@
 ﻿using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Input;
 
 using Gemini.Modules.MonoGame.Controls;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 using P3D.Legacy.MapEditor.Modules.SceneViewer.Views;
 
 namespace P3D.Legacy.MapEditor.Utils
 {
-    public class Camera3DGemini : Camera
+    public class Camera3DGemini : BaseCamera
     {
         [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -20,11 +20,9 @@ namespace P3D.Legacy.MapEditor.Utils
         private SceneView UserControl { get; }
         private DrawingSurface GraphicsControl => UserControl.GraphicsControl;
 
-        private Vector2 _lastMouseLocation;
-        private Vector2 _cameraRotationBuffer;
         private bool _skipHandleMouseMove;
 
-        public Camera3DGemini(SceneView userControl)
+        public Camera3DGemini(SceneView userControl) : base(userControl.GraphicsDevice)
         {
             UserControl = userControl;
             UserControl.MouseMove += OnMouse;
@@ -36,9 +34,6 @@ namespace P3D.Legacy.MapEditor.Utils
             UserControl.KeyUp += OnKeyboard;
             UserControl.KeyDown += OnKeyboard;
             UserControl.PreviewKeyDown += OnKeyboard;
-
-            Position = new Vector3(1, 1, 2f);
-            Rotation = new Vector3(0.5f, 3.5f, 0);
         }
 
         // Invoked when the mouse moves over the second viewport
@@ -61,75 +56,134 @@ namespace P3D.Legacy.MapEditor.Utils
         private bool HandleMouse(MouseDevice mouse)
         {
             var position = mouse.GetPosition(GraphicsControl);
-            _lastMouseLocation = new Vector2((float) position.X, (float) position.Y);
+            var state = new MouseState(
+                (int) position.X, (int) position.Y, 0,
+                mouse.LeftButton == MouseButtonState.Pressed ? ButtonState.Pressed : ButtonState.Released,
+                mouse.MiddleButton == MouseButtonState.Pressed ? ButtonState.Pressed : ButtonState.Released,
+                mouse.RightButton == MouseButtonState.Pressed ? ButtonState.Pressed : ButtonState.Released,
+                mouse.XButton1 == MouseButtonState.Pressed ? ButtonState.Pressed : ButtonState.Released,
+                mouse.XButton2 == MouseButtonState.Pressed ? ButtonState.Pressed : ButtonState.Released);
 
-            if (mouse.RightButton == MouseButtonState.Pressed)
+            if (_skipHandleMouseMove)
             {
-                System.Windows.Input.Mouse.OverrideCursor = Cursors.None;
-
-                if (_skipHandleMouseMove)
-                {
-                    _skipHandleMouseMove = false;
-                    return false;
-                }
-
-                var graphicsControlRelativeCenter = GraphicsControl.TranslatePoint(
-                    new System.Windows.Point(GraphicsControl.ActualWidth * 0.5D, GraphicsControl.ActualHeight * 0.5D), GraphicsControl);
-                var absoluteScreenPosition = GraphicsControl.PointToScreen(graphicsControlRelativeCenter);
-
-                SetCursorPos((int) absoluteScreenPosition.X, (int) absoluteScreenPosition.Y);
-                _skipHandleMouseMove = true;
-
-                var delta = position - graphicsControlRelativeCenter;
-                if (delta.Length > 100)
-                    delta = new Vector(0, 0);
-                var deltaVector = new Vector2((float) delta.X, (float) delta.Y);
-
-                _cameraRotationBuffer -= 0.01f * deltaVector;
-                if (_cameraRotationBuffer.Y < MathHelper.ToRadians(-75.0f))
-                    _cameraRotationBuffer.Y = _cameraRotationBuffer.Y - (_cameraRotationBuffer.Y - MathHelper.ToRadians(-75.0f));
-                if (_cameraRotationBuffer.Y > MathHelper.ToRadians(75.0f))
-                    _cameraRotationBuffer.Y = _cameraRotationBuffer.Y - (_cameraRotationBuffer.Y - MathHelper.ToRadians(75.0f));
-
-                Rotation = new Vector3(-MathHelper.Clamp(_cameraRotationBuffer.Y, MathHelper.ToRadians(-75.0f), MathHelper.ToRadians(75.0f)), MathHelper.WrapAngle(_cameraRotationBuffer.X), 0);
-
-                return true;
+                _previousMouseState = _currentMouseState;
+                _currentMouseState = state;
+                _skipHandleMouseMove = false;
+                return false;
             }
-            System.Windows.Input.Mouse.OverrideCursor = Cursors.Arrow;
 
-            return false;
-        }
-
-        private bool HandleKeyboard(KeyboardDevice keyboard)
-        {
-            var moveVector = Vector3.Zero;
-            if (keyboard.IsKeyDown(Key.Up) || keyboard.IsKeyDown(Key.W))
-                moveVector += Vector3.Backward;
-            if (keyboard.IsKeyDown(Key.Down) || keyboard.IsKeyDown(Key.S))
-                moveVector += Vector3.Forward;
-            if (keyboard.IsKeyDown(Key.Left) || keyboard.IsKeyDown(Key.A))
-                moveVector += Vector3.Right;
-            if (keyboard.IsKeyDown(Key.Right) || keyboard.IsKeyDown(Key.D))
-                moveVector += Vector3.Left;
-
-            var cameraRotation = Matrix.CreateRotationX(Rotation.X) * Matrix.CreateRotationY(Rotation.Y);
-            var rotatedVector = Vector3.Transform(moveVector, cameraRotation);
-
-            if (keyboard.IsKeyDown(Key.Space) || keyboard.IsKeyDown(Key.Q))
-                rotatedVector += Vector3.Up;
-            if (keyboard.IsKeyDown(Key.LeftShift) || keyboard.IsKeyDown(Key.Z))
-                rotatedVector += Vector3.Down;
-
-            Position += 0.1f * rotatedVector;
+            UpdateMouse(state);
 
             return true;
         }
 
-        public override Vector2 GetMouse() => _lastMouseLocation;
-
-        public override Vector3 GetMouseInWorld()
+        private bool HandleKeyboard(KeyboardDevice keyboard)
         {
-            return Vector3.Zero;
+            _velocity = keyboard.IsKeyDown(Key.LeftShift) ? VelocityFast : VelocityStandard;
+
+            var direction = Vector3.Zero;
+
+            if (keyboard.IsKeyDown(Key.W) || keyboard.IsKeyDown(Key.Up))
+            {
+                if (!_forwardsPressed)
+                {
+                    _forwardsPressed = true;
+                    _currentVelocity.Z = 0.0f;
+                }
+
+                direction.Z += 1.0f;
+            }
+            else
+                _forwardsPressed = false;
+
+            if (keyboard.IsKeyDown(Key.S) || keyboard.IsKeyDown(Key.Down))
+            {
+                if (!_backwardsPressed)
+                {
+                    _backwardsPressed = true;
+                    _currentVelocity.Z = 0.0f;
+                }
+
+                direction.Z -= 1.0f;
+            }
+            else
+                _backwardsPressed = false;
+
+            if (keyboard.IsKeyDown(Key.D) || keyboard.IsKeyDown(Key.Right))
+            {
+                if (!_strafeRightPressed)
+                {
+                    _strafeRightPressed = true;
+                    _currentVelocity.X = 0.0f;
+                }
+
+                direction.X += 1.0f;
+            }
+            else
+                _strafeRightPressed = false;
+
+            if (keyboard.IsKeyDown(Key.A) || keyboard.IsKeyDown(Key.Left))
+            {
+                if (!_strafeLeftPressed)
+                {
+                    _strafeLeftPressed = true;
+                    _currentVelocity.X = 0.0f;
+                }
+
+                direction.X -= 1.0f;
+            }
+            else
+                _strafeLeftPressed = false;
+
+            if (keyboard.IsKeyDown(Key.Q) || keyboard.IsKeyDown(Key.Space))
+            {
+                if (!_lshiftPressed)
+                {
+                    _lshiftPressed = true;
+                    _currentVelocity.Y = 0.0f;
+                }
+
+                direction.Y += 1.0f;
+            }
+            else
+                _lshiftPressed = false;
+
+            if (keyboard.IsKeyDown(Key.Z) || keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                if (!_spacePressed)
+                {
+                    _spacePressed = true;
+                    _currentVelocity.Y = 0.0f;
+                }
+
+                direction.Y -= 1.0f;
+            }
+            else
+                _spacePressed = false;
+
+            UpdatePosition(ref direction, 0.025f);
+
+            return true;
+        }
+
+        protected override void SetMousePosition(int x, int y)
+        {
+            var pos = GraphicsControl.PointToScreen(new System.Windows.Point(x, y));
+
+            SetCursorPos((int) pos.X, (int) pos.Y);
+            _skipHandleMouseMove = true;
+        }
+
+        protected override void SetMouseCursorVisible(bool visible)
+        {
+            System.Windows.Input.Mouse.OverrideCursor = visible ? Cursors.Arrow : Cursors.None;
+        }
+
+        protected override Point GetScreenCenter()
+        {
+            var relativeCenter = GraphicsControl.TranslatePoint(
+                new System.Windows.Point(GraphicsControl.ActualWidth * 0.5D, GraphicsControl.ActualHeight * 0.5D), GraphicsControl);
+            return new Point((int) relativeCenter.X, (int) relativeCenter.Y);
         }
     }
 }

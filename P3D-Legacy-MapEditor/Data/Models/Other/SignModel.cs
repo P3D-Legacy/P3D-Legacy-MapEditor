@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class SignModel : BaseModel<SignModel>
+    public class SignModel : BaseModel
     {
         public override int ID => 4;
 

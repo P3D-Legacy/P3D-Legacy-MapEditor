@@ -5,7 +5,10 @@
 //-----------------------------------------------------------------------------
 #endregion
 
+using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using P3D.Legacy.MapEditor.Data.Vertices;
 
 namespace P3D.Legacy.MapEditor.Primitives
 {
@@ -27,6 +30,55 @@ namespace P3D.Legacy.MapEditor.Primitives
         /// </summary>
         public CubePrimitive(float size)
         {
+            AddVertex(new Vector3(-0.5f, -0.5f, 0.5f) * size, new Vector3(0, 0, 1)); //h
+            AddVertex(new Vector3(-0.5f, 0.5f, 0.5f) * size, new Vector3(0, 0, 1)); //e
+            AddVertex(new Vector3(0.5f, -0.5f, 0.5f) * size, new Vector3(0, 0, 1)); //c
+
+            AddVertex(new Vector3(0.5f, -0.5f, 0.5f) * size, new Vector3(0, 0, 1)); //c
+            AddVertex(new Vector3(-0.5f, 0.5f, 0.5f) * size, new Vector3(0, 0, 1)); //e
+            AddVertex(new Vector3(0.5f, 0.5f, 0.5f) * size, new Vector3(0, 0, 1)); //d
+
+            AddVertex(new Vector3(0.5f, -0.5f, 0.5f) * size, new Vector3(1, 0, 0)); //c
+            AddVertex(new Vector3(0.5f, 0.5f, 0.5f) * size, new Vector3(1, 0, 0)); //d
+            AddVertex(new Vector3(0.5f, -0.5f, -0.5f) * size, new Vector3(1, 0, 0)); //b
+
+            AddVertex(new Vector3(0.5f, -0.5f, -0.5f) * size, new Vector3(1, 0, 0)); //b
+            AddVertex(new Vector3(0.5f, 0.5f, 0.5f) * size, new Vector3(1, 0, 0)); //d
+            AddVertex(new Vector3(0.5f, 0.5f, -0.5f) * size, new Vector3(1, 0, 0)); //g
+
+            AddVertex(new Vector3(-0.5f, 0.5f, 0.5f) * size, new Vector3(-1, 0, 0)); //e
+            AddVertex(new Vector3(-0.5f, -0.5f, 0.5f) * size, new Vector3(-1, 0, 0)); //h
+            AddVertex(new Vector3(-0.5f, -0.5f, -0.5f) * size, new Vector3(-1, 0, 0)); //a
+
+            AddVertex(new Vector3(-0.5f, -0.5f, -0.5f) * size, new Vector3(-1, 0, 0)); //a
+            AddVertex(new Vector3(-0.5f, 0.5f, -0.5f) * size, new Vector3(-1, 0, 0)); //f
+            AddVertex(new Vector3(-0.5f, 0.5f, 0.5f) * size, new Vector3(-1, 0, 0)); //e
+
+            AddVertex(new Vector3(-0.5f, 0.5f, -0.5f) * size, new Vector3(0, 0, -1)); //f
+            AddVertex(new Vector3(-0.5f, -0.5f, -0.5f) * size, new Vector3(0, 0, -1)); //a
+            AddVertex(new Vector3(0.5f, -0.5f, -0.5f) * size, new Vector3(0, 0, -1)); //b
+
+            AddVertex(new Vector3(0.5f, -0.5f, -0.5f) * size, new Vector3(0, 0, -1)); //b
+            AddVertex(new Vector3(0.5f, 0.5f, -0.5f) * size, new Vector3(0, 0, -1)); //g
+            AddVertex(new Vector3(-0.5f, 0.5f, -0.5f) * size, new Vector3(0, 0, -1)); //f
+
+            AddVertex(new Vector3(-0.5f, 0.5f, 0.5f) * size, Vector3.Up);
+            AddVertex(new Vector3(-0.5f, 0.5f, -0.5f) * size, Vector3.Up);
+            AddVertex(new Vector3(0.5f, 0.5f, -0.5f) * size, Vector3.Up);
+
+            AddVertex(new Vector3(0.5f, 0.5f, -0.5f) * size, Vector3.Up);
+            AddVertex(new Vector3(0.5f, 0.5f, 0.5f) * size, Vector3.Up);
+            AddVertex(new Vector3(-0.5f, 0.5f, 0.5f) * size, Vector3.Up);
+
+            AddVertex(new Vector3(-0.5f, -0.5f, 0.5f) * size, Vector3.Down);
+            AddVertex(new Vector3(-0.5f, -0.5f, -0.5f) * size, Vector3.Down);
+            AddVertex(new Vector3(0.5f, -0.5f, -0.5f) * size, Vector3.Down);
+
+            AddVertex(new Vector3(0.5f, -0.5f, -0.5f) * size, Vector3.Down);
+            AddVertex(new Vector3(0.5f, -0.5f, 0.5f) * size, Vector3.Down);
+            AddVertex(new Vector3(-0.5f, -0.5f, 0.5f) * size, Vector3.Down);
+
+            /*
             // A cube has six faces, each one pointing in a different direction.
             Vector3[] normals =
             {
@@ -60,6 +112,7 @@ namespace P3D.Legacy.MapEditor.Primitives
                 AddVertex((normal + side1 + side2) * size / 2, normal);
                 AddVertex((normal + side1 - side2) * size / 2, normal);
             }
+            */
         }
     }
 }

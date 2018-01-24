@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using P3D.Legacy.MapEditor.Data;
 using P3D.Legacy.MapEditor.Data.Models;
 using P3D.Legacy.MapEditor.Data.World;
+using P3D.Legacy.MapEditor.Renders;
 using P3D.Legacy.MapEditor.Utils;
 
 namespace P3D.Legacy.MapEditor.World

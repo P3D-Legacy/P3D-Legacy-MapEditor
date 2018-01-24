@@ -4,9 +4,9 @@ namespace P3D.Legacy.MapEditor.World
 {
     public class Entity
     {
-        public static Vector3 GetRotationFromInteger(int i)
+        public static Vector3 GetRotationFromInteger(int rotation)
         {
-            switch (i)
+            switch (rotation)
             {
                 case 0:
                     return new Vector3(0, 0, 0);
@@ -16,22 +16,25 @@ namespace P3D.Legacy.MapEditor.World
                     return new Vector3(0, MathHelper.Pi, 0);
                 case 3:
                     return new Vector3(0, MathHelper.Pi * 1.5f, 0);
+                default:
+                    return Vector3.Zero;
             }
-
-            return Vector3.Zero;
         }
-        public static int GetRotationFromVector(Vector3 v)
+        public static int GetRotationFromVector(Vector3 vector)
         {
-            if (v.Y == 0)
-                return 0;
-            if (v.Y == MathHelper.PiOver2)
-                return 1;
-            if (v.Y == MathHelper.Pi)
-                return 2;
-            if (v.Y == MathHelper.Pi * 1.5f)
-                return 3;
-
-            return 0;
+            switch (vector.Y)
+            {
+                case 0:
+                    return 0;
+                case MathHelper.PiOver2:
+                    return 1;
+                case MathHelper.Pi:
+                    return 2;
+                case MathHelper.Pi * 1.5f:
+                    return 3;
+                default:
+                    return 0;
+            }
         }
     }
 }

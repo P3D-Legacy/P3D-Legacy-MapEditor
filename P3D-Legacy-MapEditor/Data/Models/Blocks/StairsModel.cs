@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class StairsModel : BaseModel<StairsModel>
+    public class StairsModel : BaseModel
     {
         public override int ID => 16;
 

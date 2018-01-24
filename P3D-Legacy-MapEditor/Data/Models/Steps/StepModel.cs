@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class StepModel : BaseModel<StepModel>
+    public class StepModel : BaseModel
     {
         public override int ID => 7;
 

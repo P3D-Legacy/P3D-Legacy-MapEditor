@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class BillModel : BaseModel<BillModel>
+    public class BillModel : BaseModel
     {
         public override int ID => 3;
 

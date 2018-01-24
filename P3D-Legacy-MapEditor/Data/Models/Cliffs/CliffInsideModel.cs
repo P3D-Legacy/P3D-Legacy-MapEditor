@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class CliffInsideModel : BaseModel<CliffInsideModel>
+    public class CliffInsideModel : BaseModel
     {
         public override int ID => 10;
 

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class InsideCornerModel : BaseModel<InsideCornerModel>
+    public class InsideCornerModel : BaseModel
     {
         public override int ID => 6;
 

@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using P3D.Legacy.MapEditor.Renders;
 using P3D.Legacy.MapEditor.Utils;
-using P3D.Legacy.MapEditor.World;
 
 namespace RenderTest
 {
@@ -20,6 +20,17 @@ namespace RenderTest
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        RenderTarget2D renderTarget;
+        Effect fxaaEffect;
+
+        public bool useFXAA = true;
+        bool doOnce;
+
+        private float fxaaQualitySubpix = 0.75f;
+        private float fxaaQualityEdgeThreshold = 0.166f;
+        private float fxaaQualityEdgeThresholdMin = 0.0833f;
+
+
         private Camera3DMonoGame Camera;
         private Render Render;
 
@@ -28,9 +39,9 @@ namespace RenderTest
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             graphics.SynchronizeWithVerticalRetrace = false;
             graphics.ApplyChanges();
+
             IsFixedTimeStep = false;
 
             graphics.PreferredBackBufferWidth = 1440;
@@ -70,15 +81,24 @@ namespace RenderTest
         {
             base.Initialize();
 
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            graphics.ApplyChanges();
+
             Components.Add(new DebugComponent(this));
 
-            //var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
-            var path = "C:\\GitHub\\Maps\\YourRoom\\yourroom.dat";
+            renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight,
+                false, GraphicsDevice.PresentationParameters.BackBufferFormat,
+                GraphicsDevice.PresentationParameters.DepthStencilFormat);
+            fxaaEffect = new Effect(GraphicsDevice, File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "FXAA3.11.mgfx")));
+
+            var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
+            //var path = "C:\\GitHub\\Maps\\YourRoom\\yourroom.dat";
             //var path = "C:\\GitHub\\Maps\\UnderwaterCave\\main.dat";
             //var path = "C:\\GitHub\\Maps\\Kolben\\devoffices.dat";
             var text = File.ReadAllText(path);
             var levelInfo = LevelLoader.Load(text, path);
-            Camera = new Camera3DMonoGame(GraphicsDevice);
+            Camera = new Camera3DMonoGame(this);
             //var t = Stopwatch.StartNew();
             Render = new Render(GraphicsDevice, Camera, levelInfo);
             Render.Initialize(GraphicsDevice);
@@ -116,8 +136,14 @@ namespace RenderTest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            InputManager.Update(gameTime);
             Camera.Update(gameTime);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F))
+            {
+                useFXAA = !useFXAA;
+                doOnce = false;
+            }
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -129,11 +155,41 @@ namespace RenderTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.SetRenderTarget(renderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
             GraphicsDevice.Clear(ClearOptions.Stencil, Color.Transparent, 0, 0);
-
             Render.Draw(GraphicsDevice);
-            // TODO: Add your drawing code here
+            GraphicsDevice.SetRenderTarget(null);
+
+            if (useFXAA)
+            {
+                if (!doOnce)
+                {
+                    float w = renderTarget.Width;
+                    float h = renderTarget.Height;
+
+                    fxaaEffect.CurrentTechnique = fxaaEffect.Techniques["ppfxaa_PC"];
+                    fxaaEffect.Parameters["fxaaQualitySubpix"].SetValue(fxaaQualitySubpix);
+                    fxaaEffect.Parameters["fxaaQualityEdgeThreshold"].SetValue(fxaaQualityEdgeThreshold);
+                    fxaaEffect.Parameters["fxaaQualityEdgeThresholdMin"].SetValue(fxaaQualityEdgeThresholdMin);
+
+                    fxaaEffect.Parameters["invViewportWidth"].SetValue(1f / w);
+                    fxaaEffect.Parameters["invViewportHeight"].SetValue(1f / h);
+                    fxaaEffect.Parameters["texScreen"].SetValue(renderTarget);
+                    doOnce = true;
+                }
+
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, fxaaEffect);
+                spriteBatch.Draw(renderTarget, new Rectangle(0, 0, renderTarget.Width, renderTarget.Height), Color.White);
+                spriteBatch.End();
+            }
+            else
+            {
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
+                spriteBatch.Draw(renderTarget, Vector2.Zero, Color.White);
+                spriteBatch.End();
+            }
 
             base.Draw(gameTime);
         }

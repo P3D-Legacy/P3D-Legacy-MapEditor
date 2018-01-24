@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Data.Models
 {
-    public class CliffCornerModel : BaseModel<CliffCornerModel>
+    public class CliffCornerModel : BaseModel
     {
         public override int ID => 11;
 
