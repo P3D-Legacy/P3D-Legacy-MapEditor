@@ -115,10 +115,10 @@ namespace P3D.Legacy.MapEditor.Data.Models
         public GraphicsDevice GraphicsDevice { get; }
 
         public bool HasTransparentPixels => ModelTriangles.Any(t => t.HasTransparentPixels);
-        
-        public Matrix ScaleMatrix => Matrix.CreateScale(Entity.Scale);
-        public Matrix RotationMatrix => Matrix.CreateFromYawPitchRoll(Entity.Rotation.Y, Entity.Rotation.X, Entity.Rotation.Z);
-        public Matrix TranslationMatrix => Matrix.CreateTranslation(Entity.Position);
+
+        private Matrix ScaleMatrix => Matrix.CreateScale(Entity.Scale);
+        private Matrix RotationMatrix => Matrix.CreateFromYawPitchRoll(Entity.Rotation.Y, Entity.Rotation.X, Entity.Rotation.Z);
+        private Matrix TranslationMatrix => Matrix.CreateTranslation(Entity.Position);
         public Matrix WorldMatrix => ScaleMatrix * RotationMatrix * TranslationMatrix;
 
         public BoundingBox BoundingBox { get; set; }
