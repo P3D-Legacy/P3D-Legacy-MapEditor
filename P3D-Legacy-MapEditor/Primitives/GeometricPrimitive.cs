@@ -25,9 +25,9 @@ namespace P3D.Legacy.MapEditor.Primitives
             _positionedVertices = new List<VertexPositionNormalColorTexture>();
             foreach (var vertex in _vertices)
             {
-                var t = string.Equals(Model.Entity.EntityID, "Floor", StringComparison.OrdinalIgnoreCase) || 
-                        string.Equals(Model.Entity.EntityID, "AllSidesObject", StringComparison.OrdinalIgnoreCase);
-                var scaleMatrix = t ? Matrix.CreateScale(1f, 0.2f, 1f) * Matrix.CreateTranslation(new Vector3(0f, -0.5f, 0f)) : Matrix.Identity;
+                var scaleMatrix = string.Equals(Model.Entity.EntityID, "Floor", StringComparison.OrdinalIgnoreCase)
+                    ? Matrix.CreateScale(1f, 0.2f, 1f) * Matrix.CreateTranslation(new Vector3(0f, -0.5f, 0f))
+                    : Matrix.Identity;
                 _positionedVertices.Add(new VertexPositionNormalColorTexture(
                     Vector3.Transform(vertex.Position, scaleMatrix * Model.WorldMatrix),
                     Vector3.TransformNormal(vertex.Normal, scaleMatrix * Model.WorldMatrix),
