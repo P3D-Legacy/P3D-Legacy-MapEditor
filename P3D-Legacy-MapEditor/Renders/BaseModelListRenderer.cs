@@ -157,10 +157,15 @@ namespace P3D.Legacy.MapEditor.Renders
             if (level.IsDark)
                 basicEffect.DiffuseColor *= new Vector3(0.5f, 0.5f, 0.5f);
 
+            StaticOpaqueRenderer?.Draw(level, basicEffect, CullMode.None);
+            StaticTransparentRenderer?.Draw(level, basicEffect, alphaTestEffect, CullMode.None);
+
+            /*
             StaticOpaqueRenderer?.Draw(level, basicEffect, CullMode.CullClockwiseFace);
             StaticOpaqueRenderer?.Draw(level, basicEffect, CullMode.CullCounterClockwiseFace);
             StaticTransparentRenderer?.Draw(level, basicEffect, alphaTestEffect, CullMode.CullClockwiseFace);
             StaticTransparentRenderer?.Draw(level, basicEffect, alphaTestEffect, CullMode.CullCounterClockwiseFace);
+            */
 
             /*
             // render solid part (CW+CCW)
@@ -192,14 +197,10 @@ namespace P3D.Legacy.MapEditor.Renders
         public override void Draw(Level level, BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
         {
             foreach (var opaqueRenderer in DynamicOpaqueRenderers)
-                opaqueRenderer.Draw(level, basicEffect, CullMode.CullClockwiseFace);
-            foreach (var opaqueRenderer in DynamicOpaqueRenderers)
-                opaqueRenderer.Draw(level, basicEffect, CullMode.CullCounterClockwiseFace);
+                opaqueRenderer.Draw(level, basicEffect, CullMode.None);
 
             foreach (var transparentRenderer in DynamicTransparentRenderers)
-                transparentRenderer.Draw(level, basicEffect, alphaTestEffect, CullMode.CullClockwiseFace);
-            foreach (var transparentRenderer in DynamicTransparentRenderers)
-                transparentRenderer.Draw(level, basicEffect, alphaTestEffect, CullMode.CullCounterClockwiseFace);
+                transparentRenderer.Draw(level, basicEffect, alphaTestEffect, CullMode.None);
         }
     }
 }

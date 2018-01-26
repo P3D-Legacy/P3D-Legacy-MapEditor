@@ -59,6 +59,18 @@ namespace P3D.Legacy.MapEditor.Renders
             Level.SetWeather(BasicEffect, Weather.Clear);
         }
 
+        KeyValuePair<float, BaseModel> Min;
+        public void Update()
+        {
+            Min = new KeyValuePair<float, BaseModel>(float.MaxValue, null);
+            foreach (var baseModel in BaseModelListRenderer.TotalModels.Where(m => m.Entity.Visible))
+            {
+                var value = baseModel.BoundingBox.Intersects(Camera.GetMouseRay());
+                if (value.HasValue && value.Value < Min.Key)
+                    Min = new KeyValuePair<float, BaseModel>(value.Value, baseModel);
+            } 
+        }
+
         public void Draw(GraphicsDevice graphicsDevice)
         {
             BasicEffect.View = Camera.ViewMatrix;
@@ -68,20 +80,13 @@ namespace P3D.Legacy.MapEditor.Renders
 
             Level?.Draw(BasicEffect, AlphaTestEffect);
 
-            var min = new KeyValuePair<float, BaseModel>(float.MaxValue, null);
-            foreach (var baseModel in BaseModelListRenderer.TotalModels.Where(m => m.Entity.Visible))
+            Update();
+            if (Min.Value != null)
             {
-                var value = baseModel.BoundingBox.Intersects(Camera.GetMouseRay());
-                if (value.HasValue  && value.Value < min.Key)
-                    min = new KeyValuePair<float, BaseModel>(value.Value, baseModel);
+                _cube.Model = Min.Value;
+                _cube.Recalc();
+                _cube.Draw(BasicEffect, new Color(Color.LimeGreen, 0.75f));
             }
-
-            if(min.Value == null)
-                return;
-
-            _cube.Model = min.Value;
-            _cube.Recalc();
-            _cube.Draw(BasicEffect, new Color(Color.LimeGreen, 0.75f));
         }
     }
 }
