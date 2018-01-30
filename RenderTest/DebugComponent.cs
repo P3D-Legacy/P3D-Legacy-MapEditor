@@ -51,7 +51,7 @@ namespace RenderTest
 
             var fps = $"FPS : {_frameRate}";
             var ram = $"RAM : {GC.GetTotalMemory(false) / 1024} (KB)";
-            var fxa = $"FXAA : {Game.useFXAA}";
+            //var fxa = $"FXAA : {Game.useFXAA}";
 
             _fontRenderer.DrawText(_spriteBatch, fps, new Rectangle(6, 1, width, Height), Color.Black);
             _fontRenderer.DrawText(_spriteBatch, fps, new Rectangle(5, 0, width, Height), Color.White);
@@ -62,8 +62,8 @@ namespace RenderTest
             _fontRenderer.DrawText(_spriteBatch, ram, new Rectangle(6, 41, width, Height), Color.Black);
             _fontRenderer.DrawText(_spriteBatch, ram, new Rectangle(5, 40, width, Height), Color.White);
 
-            _fontRenderer.DrawText(_spriteBatch, fxa, new Rectangle(6, 81, width, Height), Color.Black);
-            _fontRenderer.DrawText(_spriteBatch, fxa, new Rectangle(5, 80, width, Height), Color.White);
+            //_fontRenderer.DrawText(_spriteBatch, fxa, new Rectangle(6, 81, width, Height), Color.Black);
+            //_fontRenderer.DrawText(_spriteBatch, fxa, new Rectangle(5, 80, width, Height), Color.White);
 
             _spriteBatch.End();
         }

@@ -15,6 +15,8 @@
     <WarningLevel>4</WarningLevel>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,47 +51,39 @@
     <Reference Include="Gemini, Version=1.0.6121.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GeminiWpf.1.0.6121\lib\net45\Gemini.dll</HintPath>
     </Reference>
-    <Reference Include="Gemini.Modules.ErrorList, Version=1.0.6121.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Gemini.Modules.ErrorList.1.0.6121\lib\net45\Gemini.Modules.ErrorList.dll</HintPath>
-    </Reference>
     <Reference Include="Gemini.Modules.Inspector, Version=1.0.6121.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gemini.Modules.Inspector.1.0.6121\lib\net45\Gemini.Modules.Inspector.dll</HintPath>
     </Reference>
-    <Reference Include="Gemini.Modules.Inspector.MonoGame, Version=1.0.6121.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Gemini.Modules.Inspector.MonoGame.1.0.6121\lib\net45\Gemini.Modules.Inspector.MonoGame.dll</HintPath>
-    </Reference>
-    <Reference Include="Gemini.Modules.MonoGame, Version=1.0.6121.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Gemini.Modules.MonoGame.1.0.6121\lib\net45\Gemini.Modules.MonoGame.dll</HintPath>
-    </Reference>
-    <Reference Include="Gemini.Modules.Output, Version=1.0.6121.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Gemini.Modules.Output.1.0.6121\lib\net45\Gemini.Modules.Output.dll</HintPath>
-    </Reference>
     <Reference Include="Gu.Localization, Version=6.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gu.Localization.6.1.0.0\lib\net45\Gu.Localization.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Gu.Wpf.Localization, Version=6.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gu.Wpf.Localization.6.1.0.0\lib\net45\Gu.Wpf.Localization.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.2.4.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
+    <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -146,6 +140,9 @@
     <Compile Include="Data\Models\2D\CrossModel.cs" />
     <Compile Include="Data\Models\2D\DoubleFloorModel.cs" />
     <Compile Include="Data\Models\2D\FloorModel.cs" />
+    <Compile Include="Modules\SceneViewer\MonoGame\DrawingSurfaceD3D9.cs" />
+    <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceEventArgs.cs" />
+    <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceDXService.cs" />
     <Compile Include="Renders\BaseModelListRenderer.cs" />
     <Compile Include="Data\Models\Blocks\BlockModel.cs" />
     <Compile Include="Data\Models\Blocks\CornerModel.cs" />
@@ -180,7 +177,6 @@
     <Compile Include="Modules\SceneViewer\Module.cs" />
     <Compile Include="Renders\Render.cs" />
     <Compile Include="Modules\SceneViewer\ViewModels\SceneViewModel.cs" />
-    <Compile Include="Modules\SceneViewer\Views\ISceneView.cs" />
     <Compile Include="Modules\SceneViewer\Inspectors\FloatEditorView.xaml.cs">
       <DependentUpon>FloatEditorView.xaml</DependentUpon>
     </Compile>
@@ -223,7 +219,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ru.resx" />
-    <None Include="app.config" />
+    <None Include="Content\FXAA3.11.mgfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -244,13 +242,18 @@
   <ItemGroup>
     <Resource Include="Resources\Icons\P3D-Legacy.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Gemini.Modules.D3D\Gemini.Modules.D3D.csproj">
+      <Project>{8e8d536e-94c1-4c09-8e89-ace9b6d25437}</Project>
+      <Name>Gemini.Modules.D3D</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Import Project="..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SharpDX.2.6.3\build\SharpDX.targets'))" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

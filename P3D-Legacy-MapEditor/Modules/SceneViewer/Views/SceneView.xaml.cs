@@ -1,35 +1,22 @@
 ﻿using System;
-using System.Windows.Controls;
+using System.Windows;
 using System.Windows.Input;
-
-using Caliburn.Micro;
-
-using Gemini.Modules.MonoGame.Controls;
-using Gemini.Modules.Output;
-
+using Gemini.Modules.D3D.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 using P3D.Legacy.MapEditor.Renders;
 using P3D.Legacy.MapEditor.Utils;
 
 namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 {
-    public enum RenderMode
-    {
-        None,
-        Mode2D,
-        Mode3D
-    }
-
     /// <summary>
     /// Interaction logic for SceneView.xaml
     /// </summary>
-    public partial class SceneView : UserControl, ISceneView, IDisposable
+    public partial class SceneView : IDisposable
     {
-        private readonly IOutput _output;
-
         public GraphicsDevice GraphicsDevice { get; private set; }
         private SceneViewModel SceneViewModel => (SceneViewModel) DataContext;
         private Render CurrentRender { get; set; }
@@ -39,8 +26,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         public SceneView()
         {
             InitializeComponent();
-
-            _output = IoC.Get<IOutput>();
         }
 
         public void Invalidate()
@@ -56,97 +41,35 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         /// <summary>
         /// Invoked after either control has created its graphics device.
         /// </summary>
-        private void OnGraphicsControlLoadContent(object sender, GraphicsDeviceEventArgs e)
+        private void GraphicsControl_OnLoadContent(object sender, GraphicsDeviceEventArgs e)
         {
             GraphicsDevice = e.GraphicsDevice;
 
+            GraphicsControl.AlwaysRefresh = true;
+
             Camera = new Camera3DGemini(this);
+            Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
             CurrentRender = new Render(GraphicsDevice, Camera, SceneViewModel.LevelInfo);
-            CurrentRender.Initialize(GraphicsDevice);
+            CurrentRender.Initialize();
         }
 
-        private bool once = false;
         /// <summary>
         /// Invoked when our second control is ready to render.
         /// </summary>
-        private void OnGraphicsControlDraw(object sender, DrawEventArgs e)
+        private void GraphicsControl_OnDraw(object sender, DrawEventArgs e)
         {
-            e.GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            if (!once)
-            {
-                once = true;
-                Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
-            }
-            CurrentRender.Draw(e.GraphicsDevice);
+            CurrentRender.Draw();
         }
 
-        // Invoked when the mouse moves over the second viewport
-        private void OnGraphicsControlMouseMove(object sender, MouseEventArgs e)
+        private void GraphicsControl_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+            => GraphicsControl.Focus();
+
+        private void GraphicsControl_OnViewportChanged(object sender, SizeChangedInfo e)
         {
-            //if (CurrentRender.HandleMouse(e.MouseDevice))
-            //    GraphicsControl.Invalidate();
-        }
-
-        // We use the left mouse button to do exclusive capture of the mouse so we can drag and drag
-        // to rotate the cube without ever leaving the control
-        private void OnGraphicsControlHwndLButtonDown(object sender, MouseEventArgs e)
-        {
-            //if (CurrentRender.HandleMouse(e.MouseDevice))
-            //    GraphicsControl.Invalidate();
-
-            _output.AppendLine("Mouse left button down");
-        }
-
-        private void OnGraphicsControlHwndLButtonUp(object sender, MouseEventArgs e)
-        {
-            //if (CurrentRender.HandleMouse(e.MouseDevice))
-            //    GraphicsControl.Invalidate();
-
-            _output.AppendLine("Mouse left button up");
-        }
-
-        private void OnGraphicsControlHwndRButtonDown(object sender, MouseEventArgs e)
-        {
-            //if (CurrentRender.HandleMouse(e.MouseDevice))
-            //    GraphicsControl.Invalidate();
-
-            _output.AppendLine("Mouse right button down");
-            //GraphicsControl.CaptureMouse();
-            GraphicsControl.Focus();
-        }
-
-        private void OnGraphicsControlHwndRButtonUp(object sender, MouseEventArgs e)
-        {
-            //if (CurrentRender.HandleMouse(e.MouseDevice))
-            //    GraphicsControl.Invalidate();
-
-            _output.AppendLine("Mouse right button up");
-            //GraphicsControl.ReleaseMouseCapture();
-        }
-
-        private void OnGraphicsControlKeyDown(object sender, KeyEventArgs e)
-        {
-            //if(CurrentRender.HandleKeyboard(e.KeyboardDevice))
-            //    GraphicsControl.Invalidate();
-
-            _output.AppendLine("Key down: " + e.Key);
-        }
-
-        private void OnGraphicsControlKeyUp(object sender, KeyEventArgs e)
-        {
-            //if (CurrentRender.HandleKeyboard(e.KeyboardDevice))
-            //    GraphicsControl.Invalidate();
-
-            _output.AppendLine("Key up: " + e.Key);
-        }
-
-        private void OnGraphicsControlHwndMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            //if (CurrentRender.HandleMouse(e.MouseDevice))
-            //    GraphicsControl.Invalidate();
-
-            _output.AppendLine("Mouse wheel: " + e.Delta);
+            Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
+            CurrentRender.ViewportChanged();
         }
     }
 }

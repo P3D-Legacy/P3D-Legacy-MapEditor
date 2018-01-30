@@ -1,12 +1,13 @@
 ﻿using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Input;
-
-using Gemini.Modules.MonoGame.Controls;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 using P3D.Legacy.MapEditor.Modules.SceneViewer.Views;
+
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace P3D.Legacy.MapEditor.Utils
 {
@@ -18,7 +19,7 @@ namespace P3D.Legacy.MapEditor.Utils
 
 
         private SceneView UserControl { get; }
-        private DrawingSurface GraphicsControl => UserControl.GraphicsControl;
+        private FrameworkElement GraphicsControl => UserControl.GraphicsControl;
 
         private bool _skipHandleMouseMove;
 

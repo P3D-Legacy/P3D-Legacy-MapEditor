@@ -20,17 +20,6 @@ namespace RenderTest
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        RenderTarget2D renderTarget;
-        Effect fxaaEffect;
-
-        public bool useFXAA = true;
-        bool doOnce;
-
-        private float fxaaQualitySubpix = 0.75f;
-        private float fxaaQualityEdgeThreshold = 0.166f;
-        private float fxaaQualityEdgeThresholdMin = 0.0833f;
-
-
         private Camera3DMonoGame Camera;
         private Render Render;
 
@@ -87,11 +76,6 @@ namespace RenderTest
 
             Components.Add(new DebugComponent(this));
 
-            renderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight,
-                false, GraphicsDevice.PresentationParameters.BackBufferFormat,
-                GraphicsDevice.PresentationParameters.DepthStencilFormat);
-            fxaaEffect = new Effect(GraphicsDevice, File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "FXAA3.11.mgfx")));
-
             var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
             //var path = "C:\\GitHub\\Maps\\YourRoom\\yourroom.dat";
             //var path = "C:\\GitHub\\Maps\\UnderwaterCave\\main.dat";
@@ -101,7 +85,7 @@ namespace RenderTest
             Camera = new Camera3DMonoGame(this);
             //var t = Stopwatch.StartNew();
             Render = new Render(GraphicsDevice, Camera, levelInfo);
-            Render.Initialize(GraphicsDevice);
+            Render.Initialize();
             //t.Stop();
         }
 
@@ -138,14 +122,6 @@ namespace RenderTest
 
             Camera.Update(gameTime);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F))
-            {
-                useFXAA = !useFXAA;
-                doOnce = false;
-            }
-
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -155,41 +131,9 @@ namespace RenderTest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.SetRenderTarget(renderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            GraphicsDevice.Clear(ClearOptions.Stencil, Color.Transparent, 0, 0);
-            Render.Draw(GraphicsDevice);
-            GraphicsDevice.SetRenderTarget(null);
 
-            if (useFXAA)
-            {
-                if (!doOnce)
-                {
-                    float w = renderTarget.Width;
-                    float h = renderTarget.Height;
-
-                    fxaaEffect.CurrentTechnique = fxaaEffect.Techniques["ppfxaa_PC"];
-                    fxaaEffect.Parameters["fxaaQualitySubpix"].SetValue(fxaaQualitySubpix);
-                    fxaaEffect.Parameters["fxaaQualityEdgeThreshold"].SetValue(fxaaQualityEdgeThreshold);
-                    fxaaEffect.Parameters["fxaaQualityEdgeThresholdMin"].SetValue(fxaaQualityEdgeThresholdMin);
-
-                    fxaaEffect.Parameters["invViewportWidth"].SetValue(1f / w);
-                    fxaaEffect.Parameters["invViewportHeight"].SetValue(1f / h);
-                    fxaaEffect.Parameters["texScreen"].SetValue(renderTarget);
-                    doOnce = true;
-                }
-
-
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, fxaaEffect);
-                spriteBatch.Draw(renderTarget, new Rectangle(0, 0, renderTarget.Width, renderTarget.Height), Color.White);
-                spriteBatch.End();
-            }
-            else
-            {
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
-                spriteBatch.Draw(renderTarget, Vector2.Zero, Color.White);
-                spriteBatch.End();
-            }
+            Render.Draw();
 
             base.Draw(gameTime);
         }

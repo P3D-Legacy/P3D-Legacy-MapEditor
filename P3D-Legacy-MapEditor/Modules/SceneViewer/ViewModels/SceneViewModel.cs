@@ -8,8 +8,6 @@ using Gemini.Framework;
 using Gemini.Framework.Services;
 using Gemini.Framework.Threading;
 
-using Microsoft.Xna.Framework;
-
 using P3D.Legacy.MapEditor.Data;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.Views;
 using P3D.Legacy.MapEditor.Properties;
@@ -21,7 +19,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
 	public class SceneViewModel : PersistedDocument
     {
-        private ISceneView _sceneView;
+        private SceneView _sceneView;
 
         public override bool ShouldReopenOnStart => true;
 
@@ -33,7 +31,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels
 
         protected override void OnViewLoaded(object view)
         {
-            _sceneView = view as ISceneView;
+            _sceneView = view as SceneView;
             base.OnViewLoaded(view);
         }
 
@@ -69,7 +67,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels
         }
         protected override Task DoSave(string filePath)
         {
-            var newText = "";
+            var newText = string.Empty;
             File.WriteAllText(filePath, newText);
             _originalText = newText;
             return TaskUtility.Completed;
