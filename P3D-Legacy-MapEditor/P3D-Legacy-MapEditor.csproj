@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -66,15 +66,6 @@
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D11, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DXGI, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -140,6 +131,8 @@
     <Compile Include="Data\Models\2D\CrossModel.cs" />
     <Compile Include="Data\Models\2D\DoubleFloorModel.cs" />
     <Compile Include="Data\Models\2D\FloorModel.cs" />
+    <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceServiceSingleton.cs" />
+    <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceManager.cs" />
     <Compile Include="Modules\SceneViewer\MonoGame\DrawingSurfaceD3D9.cs" />
     <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceEventArgs.cs" />
     <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceDXService.cs" />
@@ -151,11 +144,16 @@
     <Compile Include="Data\Models\Blocks\PyramidModel.cs" />
     <Compile Include="Data\Models\Blocks\SlideModel.cs" />
     <Compile Include="Data\Models\Blocks\StairsModel.cs" />
+    <Compile Include="Components\BaseModelSelector.cs" />
+    <Compile Include="Effect\EffectResource.cs" />
+    <Compile Include="Effect\FxaaEffect.cs" />
     <Compile Include="Renders\LevelRenderer.cs" />
     <Compile Include="Renders\BaseVertexRenderer.cs" />
-    <Compile Include="Utils\Camera3DGemini.cs" />
-    <Compile Include="Utils\Camera3DMonoGame.cs" />
-    <Compile Include="Utils\BaseCamera.cs" />
+    <Compile Include="Components\Camera3DGemini.cs" />
+    <Compile Include="Components\Camera3DMonoGame.cs" />
+    <Compile Include="Components\BaseCamera.cs" />
+    <Compile Include="Components\ModelSelectorGemini.cs" />
+    <Compile Include="Components\ModelSelectorMonoGame.cs" />
     <Compile Include="Utils\TextureHandler.cs" />
     <Compile Include="Data\Vertices\VertexPositionNormalColorTexture.cs" />
     <Compile Include="Utils\TextureLoader.cs" />
@@ -198,12 +196,12 @@
     <Compile Include="Utils\LevelLoader.cs" />
     <Compile Include="Utils\TagsLoader.cs" />
     <Compile Include="Data\World\Weather.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Modules\Startup\Module.cs" />
     <Compile Include="Primitives\CubePrimitive.cs" />
     <Compile Include="Primitives\GeometricPrimitive.cs" />
     <Compile Include="Data\Vertices\VertexPositionNormal.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -219,10 +217,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ru.resx" />
-    <None Include="Content\FXAA3.11.mgfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
+    <None Include="Effect\Resources\Compile.bat" />
+    <EmbeddedResource Include="Effect\Resources\FxaaEffectDefault.dx11.mgfx" />
+    <EmbeddedResource Include="Effect\Resources\FxaaEffectHigh.dx11.mgfx" />
+    <EmbeddedResource Include="Effect\Resources\FxaaEffectLow.dx11.mgfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -240,20 +238,21 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\Icons\P3D-Legacy.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gemini.Modules.D3D\Gemini.Modules.D3D.csproj">
-      <Project>{8e8d536e-94c1-4c09-8e89-ace9b6d25437}</Project>
+      <Project>{fe334a7f-de60-4036-a67a-c9761310888c}</Project>
       <Name>Gemini.Modules.D3D</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Effect\Resources\FXAA.fx" />
+    <Content Include="Effect\Resources\Fxaa3_11.h" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\SharpDX.2.6.3\build\SharpDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SharpDX.2.6.3\build\SharpDX.targets'))" />
-  </Target>
 </Project>

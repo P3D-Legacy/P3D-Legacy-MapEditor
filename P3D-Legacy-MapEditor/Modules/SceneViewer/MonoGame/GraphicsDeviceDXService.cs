@@ -28,7 +28,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
     /// </summary>
     [Export(typeof(IGraphicsDeviceService))]
     [Export(typeof(GraphicsDeviceDXService))]
-    public class GraphicsDeviceDXService : IGraphicsDeviceService
+    public class GraphicsDeviceDXService : GraphicsDeviceServiceSingleton
     {
         // Keep track of how many controls are sharing the singletonInstance.
         private static int _referenceCount;
@@ -41,20 +41,21 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         /// <summary>
         /// Gets the current graphics device.
         /// </summary>
-        public GraphicsDevice GraphicsDevice
+        public override GraphicsDevice GraphicsDevice
         {
             get
             {
                 EnsureGraphicsDevice();
                 return _graphicsDevice;
             }
+            protected set => _graphicsDevice = value;
         }
 
         // IGraphicsDeviceService events.
-        public event EventHandler<EventArgs> DeviceCreated;
-        public event EventHandler<EventArgs> DeviceDisposing;
-        public event EventHandler<EventArgs> DeviceReset;
-        public event EventHandler<EventArgs> DeviceResetting;
+        public override event EventHandler<EventArgs> DeviceCreated;
+        public override event EventHandler<EventArgs> DeviceDisposing;
+        public override event EventHandler<EventArgs> DeviceReset;
+        public override event EventHandler<EventArgs> DeviceResetting;
 
         /// <summary>
         /// Constructor is private, because this is a singleton class:
@@ -118,7 +119,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         /// <summary>
         /// Releases a reference to the singleton instance.
         /// </summary>
-        public void Release(bool disposing)
+        public override void Release(bool disposing)
         {
             // Decrement the "how many controls sharing the device" reference count.
             if (Interlocked.Decrement(ref _referenceCount) == 0)

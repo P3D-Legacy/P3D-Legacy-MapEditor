@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Windows;
+
 using Gemini.Modules.D3D.Controls;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
@@ -18,7 +20,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         /// </summary>
         public event EventHandler<GraphicsDeviceEventArgs> UnloadContent;
 
-        private GraphicsDeviceDXService _graphicsDeviceService;
+        private GraphicsDeviceServiceSingleton _graphicsDeviceService;
         private RenderTarget2D _renderTarget;
 
         public GraphicsDevice GraphicsDevice => _graphicsDeviceService.GraphicsDevice;
@@ -34,7 +36,8 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
             if (_graphicsDeviceService == null)
             {
                 // We use a render target, so the back buffer dimensions don't matter.
-                _graphicsDeviceService = GraphicsDeviceDXService.AddRef((int)ActualWidth, (int)ActualHeight);
+                _graphicsDeviceService = GraphicsDeviceDXService.AddRef((int) ActualWidth, (int) ActualHeight);
+                //_graphicsDeviceService = GraphicsDeviceManager.AddRef((int) ActualWidth, (int) ActualHeight);
                 _graphicsDeviceService.DeviceResetting += OnGraphicsDeviceServiceDeviceResetting;
 
                 SetViewport();
@@ -109,7 +112,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
             GraphicsDevice.SetRenderTarget(_renderTarget);
             SetViewport();
             base.RaiseDraw(args);
-            _graphicsDeviceService.GraphicsDevice.Flush();
+            //_graphicsDeviceService.GraphicsDevice.Flush();
             GraphicsDevice.SetRenderTarget(null);
         }
 

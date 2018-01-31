@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace P3D.Legacy.MapEditor.Utils
+namespace P3D.Legacy.MapEditor.Components
 {
     // http://www.dhpoware.com/demos/xnaFirstPersonCamera.html
     public abstract class BaseCamera

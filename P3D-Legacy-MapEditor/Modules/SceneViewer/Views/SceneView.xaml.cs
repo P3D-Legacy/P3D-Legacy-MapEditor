@@ -4,7 +4,7 @@ using System.Windows.Input;
 using Gemini.Modules.D3D.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using P3D.Legacy.MapEditor.Components;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 using P3D.Legacy.MapEditor.Renders;
@@ -21,6 +21,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         private SceneViewModel SceneViewModel => (SceneViewModel) DataContext;
         private Render CurrentRender { get; set; }
         private Camera3DGemini Camera { get; set; }
+        private ModelSelectorGemini ModelSelector { get; set; }
 
 
         public SceneView()
@@ -49,7 +50,10 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 
             Camera = new Camera3DGemini(this);
             Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
-            CurrentRender = new Render(GraphicsDevice, Camera, SceneViewModel.LevelInfo);
+
+            ModelSelector = new ModelSelectorGemini(this, Camera);
+
+            CurrentRender = new Render(GraphicsDevice, Camera, ModelSelector, SceneViewModel.LevelInfo);
             CurrentRender.Initialize();
         }
 

@@ -144,7 +144,6 @@ namespace P3D.Legacy.MapEditor.Utils
             shaderInfo.Position = new Vector3(posList[0], posList[1], posList[2]);
             var objectSizeList = tags.GetTag<int[]>("Size");
             shaderInfo.ObjectSize = new Size(objectSizeList[0], objectSizeList[1]);
-            var dayTime = default(int[]);
             if (tags.TagExists("DayTime"))
                 shaderInfo.DayTime = tags.GetTag<int[]>("DayTime");
 

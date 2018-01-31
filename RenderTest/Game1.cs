@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using P3D.Legacy.MapEditor.Components;
 using P3D.Legacy.MapEditor.Renders;
 using P3D.Legacy.MapEditor.Utils;
 
@@ -17,33 +18,31 @@ namespace RenderTest
     {
         public static Point DefaultResolution => new Point(800, 600);
 
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager Graphics { get; }
 
-        private Camera3DMonoGame Camera;
-        private Render Render;
+        private Render _render;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.SynchronizeWithVerticalRetrace = false;
-            graphics.ApplyChanges();
+            Graphics.SynchronizeWithVerticalRetrace = false;
+            Graphics.ApplyChanges();
 
             IsFixedTimeStep = false;
 
-            graphics.PreferredBackBufferWidth = 1440;
-            graphics.PreferredBackBufferHeight = 900;
+            Graphics.PreferredBackBufferWidth = 1440;
+            Graphics.PreferredBackBufferHeight = 900;
 
-            graphics.ApplyChanges();
+            Graphics.ApplyChanges();
 
             //Window.AllowUserResizing = true;
             //Window.ClientSizeChanged += OnResize;
         }
         public void OnResize(object sender, EventArgs e)
         {
-            if (graphics.GraphicsDevice.Viewport.Width < DefaultResolution.X || graphics.GraphicsDevice.Viewport.Height < DefaultResolution.Y)
+            if (Graphics.GraphicsDevice.Viewport.Width < DefaultResolution.X || Graphics.GraphicsDevice.Viewport.Height < DefaultResolution.Y)
             {
                 Resize(DefaultResolution);
                 return;
@@ -54,10 +53,10 @@ namespace RenderTest
             if (size.X < DefaultResolution.X || size.Y < DefaultResolution.Y)
                 return;
 
-            graphics.PreferredBackBufferWidth = size.X;
-            graphics.PreferredBackBufferHeight = size.Y;
+            Graphics.PreferredBackBufferWidth = size.X;
+            Graphics.PreferredBackBufferHeight = size.Y;
 
-            graphics.ApplyChanges();
+            Graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -68,11 +67,9 @@ namespace RenderTest
         /// </summary>
         protected override void Initialize()
         {
-            base.Initialize();
-
-            graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
-            graphics.ApplyChanges();
+            Graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            Graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            Graphics.ApplyChanges();
 
             Components.Add(new DebugComponent(this));
 
@@ -82,11 +79,17 @@ namespace RenderTest
             //var path = "C:\\GitHub\\Maps\\Kolben\\devoffices.dat";
             var text = File.ReadAllText(path);
             var levelInfo = LevelLoader.Load(text, path);
-            Camera = new Camera3DMonoGame(this);
-            //var t = Stopwatch.StartNew();
-            Render = new Render(GraphicsDevice, Camera, levelInfo);
-            Render.Initialize();
-            //t.Stop();
+
+            var camera = new Camera3DMonoGame(this);
+            Components.Add(camera);
+
+            var modelSelector = new ModelSelectorMonoGame(camera);
+            Components.Add(modelSelector);
+
+            _render = new Render(GraphicsDevice, camera, modelSelector, levelInfo);
+            Components.Add(_render);
+
+            base.Initialize();
         }
 
         /// <summary>
@@ -95,8 +98,7 @@ namespace RenderTest
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            base.LoadContent();
 
             // TODO: use this.Content to load your game content here
         }
@@ -107,6 +109,8 @@ namespace RenderTest
         /// </summary>
         protected override void UnloadContent()
         {
+            base.UnloadContent();
+
             // TODO: Unload any non ContentManager content here
         }
 
@@ -120,8 +124,6 @@ namespace RenderTest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            Camera.Update(gameTime);
-
             base.Update(gameTime);
         }
 
@@ -133,7 +135,7 @@ namespace RenderTest
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Render.Draw();
+            _render.Draw();
 
             base.Draw(gameTime);
         }

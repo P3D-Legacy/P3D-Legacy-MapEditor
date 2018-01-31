@@ -1,19 +1,51 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace P3D.Legacy.MapEditor.Utils
+namespace P3D.Legacy.MapEditor.Components
 {
-    public class Camera3DMonoGame : BaseCamera
+    public class Camera3DMonoGame : BaseCamera, IGameComponent, IUpdateable, IComparable<GameComponent>
     {
+        private bool _enabled = true;
+        public bool Enabled
+        {
+            get => _enabled;
+            set
+            {
+                if (_enabled != value)
+                {
+                    _enabled = value;
+                    OnEnabledChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private int _updateOrder;
+        public int UpdateOrder
+        {
+            get => _updateOrder;
+            set
+            {
+                if (_updateOrder != value)
+                {
+                    _updateOrder = value;
+                    OnUpdateOrderChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+        
+        public event EventHandler<EventArgs> EnabledChanged;
+        public event EventHandler<EventArgs> UpdateOrderChanged;
+
         private Game Game { get; }
 
         private KeyboardState _currentKeyboardState;
-        private KeyboardState _previousKeyboardState;
 
-        public Camera3DMonoGame(Game game) : base(game.GraphicsDevice)
+        public Camera3DMonoGame(Game game) : base(game.GraphicsDevice) => Game = game;
+
+        public void Initialize()
         {
-            Game = game;
-
             _currentKeyboardState = Keyboard.GetState();
             _currentMouseState = Mouse.GetState();
         }
@@ -26,7 +58,6 @@ namespace P3D.Legacy.MapEditor.Utils
 
         private void UpdateKeyboard(KeyboardState keyboardState, float elapsed)
         {
-            _previousKeyboardState = _currentKeyboardState;
             _currentKeyboardState = keyboardState;
 
             _velocity = _currentKeyboardState.IsKeyDown(Keys.LeftShift) ? VelocityFast : VelocityStandard;
@@ -128,5 +159,13 @@ namespace P3D.Legacy.MapEditor.Utils
         {
             return new Point(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
         }
+
+        protected virtual void OnUpdateOrderChanged(object sender, EventArgs args)
+            => UpdateOrderChanged?.Invoke(sender, args);
+
+        protected virtual void OnEnabledChanged(object sender, EventArgs args) 
+            => EnabledChanged?.Invoke(sender, args);
+
+        public int CompareTo(GameComponent other) => other.UpdateOrder - UpdateOrder;
     }
 }

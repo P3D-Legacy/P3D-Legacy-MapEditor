@@ -46,7 +46,9 @@
 using System;
 using System.Windows;
 using System.Windows.Interop;
+
 using Gemini.Modules.D3D.Util;
+
 using SharpDX.Direct3D9;
 
 namespace Gemini.Modules.D3D.Services

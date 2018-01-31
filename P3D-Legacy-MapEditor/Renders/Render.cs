@@ -1,52 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using P3D.Legacy.MapEditor.Components;
 using P3D.Legacy.MapEditor.Data;
-using P3D.Legacy.MapEditor.Data.Models;
-using P3D.Legacy.MapEditor.Data.World;
-using P3D.Legacy.MapEditor.Primitives;
-using P3D.Legacy.MapEditor.Utils;
+using P3D.Legacy.MapEditor.Effect;
 using P3D.Legacy.MapEditor.World;
 
 namespace P3D.Legacy.MapEditor.Renders
 {
-    public class Render
+    public class Render : IGameComponent
     {
         private GraphicsDevice GraphicsDevice { get; }
-        private SpriteBatch SpriteBatch { get; set; }
+        private SpriteBatch SpriteBatch { get; }
         private RenderTarget2D RenderTarget { get; set; }
 
 
         private BasicEffect BasicEffect { get; set; }
         private AlphaTestEffect AlphaTestEffect { get; set; }
-        private Effect FXAAEffect { get; set; }
-        private bool FXAAEnabled { get; set; } = false;
-        private float FXAAQualitySubpix = 0.75f;
-        private float FXAAQualityEdgeThreshold = 0.166f;
-        private float FXAAQualityEdgeThresholdMin = 0.0833f;
+        private FxaaEffect FxaaEffect { get; set; }
+        private bool FxaaEnabled { get; set; } = true;
+        private const float FxaaQualitySubpix = 0.75f;
+        private const float FxaaQualityEdgeThreshold = 0.166f;
+        private const float FxaaQualityEdgeThresholdMin = 0.0833f;
 
         private Level Level { get; set; }
 
         private BaseCamera Camera { get; }
+        private BaseModelSelector ModelSelector { get; }
 
-        private readonly CubePrimitive _cube;
 
-        public Render(GraphicsDevice graphicsDevice, BaseCamera camera, LevelInfo levelInfo)
+
+        public Render(GraphicsDevice graphicsDevice, BaseCamera camera, BaseModelSelector modelSelector, LevelInfo levelInfo)
         {
             GraphicsDevice = graphicsDevice;
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
             Camera = camera;
+            ModelSelector = modelSelector;
 
             if (levelInfo != null)
-                Level = new Level(levelInfo, graphicsDevice);
-
-            _cube = new CubePrimitive();
-
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
+                Level = new Level(levelInfo, graphicsDevice);  
         }
         
         public void Initialize()
@@ -54,16 +46,27 @@ namespace P3D.Legacy.MapEditor.Renders
             RenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height,
                 false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
 
-            FXAAEffect = new Effect(GraphicsDevice, File.ReadAllBytes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "FXAA3.11.mgfx")));
-            FXAAEffect.CurrentTechnique = FXAAEffect.Techniques["ppfxaa_PC"];
-            FXAAEffect.Parameters["fxaaQualitySubpix"].SetValue(FXAAQualitySubpix);
-            FXAAEffect.Parameters["fxaaQualityEdgeThreshold"].SetValue(FXAAQualityEdgeThreshold);
-            FXAAEffect.Parameters["fxaaQualityEdgeThresholdMin"].SetValue(FXAAQualityEdgeThresholdMin);
+            /*
+            FxaaEffect = new FxaaEffect(GraphicsDevice)
+            {
+                SubpixelQuality = FxaaQualitySubpix,
+                EdgeThreshold = FxaaQualityEdgeThreshold,
+                EdgeThresholdMin = FxaaQualityEdgeThresholdMin,
 
-            FXAAEffect.Parameters["invViewportWidth"].SetValue(1f / RenderTarget.Width);
-            FXAAEffect.Parameters["invViewportHeight"].SetValue(1f / RenderTarget.Height);
-            FXAAEffect.Parameters["texScreen"].SetValue(RenderTarget);
+                InverseDimensions = new Vector2(1f / GraphicsDevice.Viewport.Width, 1f / GraphicsDevice.Viewport.Height),
+                //InvViewportWidth = 1f / GraphicsDevice.Viewport.Width,
+                //InvViewportHeight = 1f / GraphicsDevice.Viewport.Height,
 
+                RenderTarget = RenderTarget
+            };
+            */
+            FxaaEffect = new FxaaEffect(GraphicsDevice)
+            {
+                InverseDimensions = new Vector2(1f / GraphicsDevice.Viewport.Width, 1f / GraphicsDevice.Viewport.Height),
+                RenderTarget = RenderTarget
+            };
+            FxaaEffect.SetHightQuality();
+            //FxaaEffect.CurrentTechnique = FxaaEffect.PCTechnique;
 
             BasicEffect = new BasicEffect(GraphicsDevice)
             {
@@ -80,10 +83,8 @@ namespace P3D.Legacy.MapEditor.Renders
                 //ReferenceAlpha = 0
             };
 
-            //graphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
-
-            Level.UpdateLighting(BasicEffect);
-            Level.SetWeather(BasicEffect, Weather.Clear);
+            //Level.UpdateLighting(BasicEffect);
+            //Level.SetWeather(BasicEffect, Weather.Clear);
         }
 
         public void ViewportChanged()
@@ -91,18 +92,8 @@ namespace P3D.Legacy.MapEditor.Renders
             RenderTarget?.Dispose();
             RenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height,
                 false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
-        }
-
-        KeyValuePair<float, BaseModel> Min;
-        public void Update()
-        {
-            Min = new KeyValuePair<float, BaseModel>(float.MaxValue, null);
-            foreach (var baseModel in BaseModelListRenderer.TotalModels.Where(m => m.Entity.Visible))
-            {
-                var value = baseModel.BoundingBox.Intersects(Camera.GetMouseRay());
-                if (value.HasValue && value.Value < Min.Key)
-                    Min = new KeyValuePair<float, BaseModel>(value.Value, baseModel);
-            } 
+            FxaaEffect.InverseDimensions = new Vector2(1f / GraphicsDevice.Viewport.Width, 1f / GraphicsDevice.Viewport.Height);
+            FxaaEffect.RenderTarget = RenderTarget;
         }
 
         public void Draw()
@@ -116,29 +107,20 @@ namespace P3D.Legacy.MapEditor.Renders
             var prevRenderTargets = GraphicsDevice.GetRenderTargets();
             GraphicsDevice.SetRenderTarget(RenderTarget);
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            GraphicsDevice.Clear(ClearOptions.Stencil, Color.Transparent, 0, 0);
-            GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
             Level?.Draw(BasicEffect, AlphaTestEffect);
-            //Update();
-            if (Min.Value != null)
-            {
-                _cube.Model = Min.Value;
-                _cube.Recalc();
-                _cube.Draw(BasicEffect, new Color(Color.LimeGreen, 0.75f));
-            }
+            ModelSelector?.Draw(BasicEffect);
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.SetRenderTargets(prevRenderTargets);
             
-            if (FXAAEnabled)
+            if (FxaaEnabled)
             {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointWrap,
-                    DepthStencilState.Default, RasterizerState.CullNone, FXAAEffect);
-                SpriteBatch.Draw(RenderTarget, new Rectangle(0, 0, RenderTarget.Width, RenderTarget.Height), Color.White);
+                SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, FxaaEffect);
+                SpriteBatch.Draw(RenderTarget, Vector2.Zero, Color.White);
                 SpriteBatch.End();
             }
             else
             {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
+                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointClamp);
                 SpriteBatch.Draw(RenderTarget, Vector2.Zero, Color.White);
                 SpriteBatch.End();
             }

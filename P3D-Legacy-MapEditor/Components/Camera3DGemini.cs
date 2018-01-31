@@ -7,9 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 using P3D.Legacy.MapEditor.Modules.SceneViewer.Views;
 
-using Point = Microsoft.Xna.Framework.Point;
-
-namespace P3D.Legacy.MapEditor.Utils
+namespace P3D.Legacy.MapEditor.Components
 {
     public class Camera3DGemini : BaseCamera
     {
@@ -180,11 +178,11 @@ namespace P3D.Legacy.MapEditor.Utils
             System.Windows.Input.Mouse.OverrideCursor = visible ? Cursors.Arrow : Cursors.None;
         }
 
-        protected override Point GetScreenCenter()
+        protected override Microsoft.Xna.Framework.Point GetScreenCenter()
         {
             var relativeCenter = GraphicsControl.TranslatePoint(
                 new System.Windows.Point(GraphicsControl.ActualWidth * 0.5D, GraphicsControl.ActualHeight * 0.5D), GraphicsControl);
-            return new Point((int) relativeCenter.X, (int) relativeCenter.Y);
+            return new Microsoft.Xna.Framework.Point((int) relativeCenter.X, (int) relativeCenter.Y);
         }
     }
 }
