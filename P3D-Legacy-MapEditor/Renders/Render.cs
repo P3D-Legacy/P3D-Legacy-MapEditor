@@ -1,7 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using P3D.Legacy.MapEditor.Components;
+using P3D.Legacy.MapEditor.Components.Camera;
+using P3D.Legacy.MapEditor.Components.ModelSelector;
 using P3D.Legacy.MapEditor.Data;
 using P3D.Legacy.MapEditor.Effect;
 using P3D.Legacy.MapEditor.World;
@@ -16,8 +19,40 @@ namespace P3D.Legacy.MapEditor.Renders
         MSAA
     }
 
-    public class Render : IGameComponent
+    public class Render : IGameComponent, IDrawable
     {
+        private int _drawOrder;
+        public int DrawOrder
+        {
+            get => _drawOrder;
+            set
+            {
+                if (_drawOrder != value)
+                {
+                    _drawOrder = value;
+                    OnDrawOrderChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private bool _visible = true;
+        public bool Visible
+        {
+            get => _visible;
+            set
+            {
+                if (_visible != value)
+                {
+                    _visible = value;
+                    OnVisibleChanged(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public event EventHandler<EventArgs> DrawOrderChanged;
+        public event EventHandler<EventArgs> VisibleChanged;
+
+
         private GraphicsDevice GraphicsDevice { get; }
         private SpriteBatch SpriteBatch { get; }
         private RenderTarget2D RenderTarget { get; set; }
@@ -65,9 +100,7 @@ namespace P3D.Legacy.MapEditor.Renders
             AlphaTestEffect = new AlphaTestEffect(GraphicsDevice)
             {
                 VertexColorEnabled = true,
-                FogEnabled = false,
-                //AlphaFunction = CompareFunction.Equal,
-                //ReferenceAlpha = 0
+                FogEnabled = false
             };
 
             //Level.UpdateLighting(BasicEffect);
@@ -107,7 +140,7 @@ namespace P3D.Legacy.MapEditor.Renders
             ViewportChanged();
         }
 
-        public void Draw()
+        public void Draw(GameTime gameTime)
         {
             BasicEffect.View = Camera.ViewMatrix;
             BasicEffect.Projection = Camera.ProjectionMatrix;
@@ -144,5 +177,11 @@ namespace P3D.Legacy.MapEditor.Renders
                     break;
             }
         }
+
+        protected virtual void OnVisibleChanged(object sender, EventArgs args) 
+            => VisibleChanged?.Invoke(this, args);
+
+        protected virtual void OnDrawOrderChanged(object sender, EventArgs args)
+            => DrawOrderChanged?.Invoke(this, args);
     }
 }

@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace RenderTest.BMFont
+namespace P3D.Legacy.MapEditor.BMFont
 {
     public class FontRenderer : IDisposable
     {

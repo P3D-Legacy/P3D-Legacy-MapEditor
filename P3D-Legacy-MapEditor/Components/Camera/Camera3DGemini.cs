@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 using P3D.Legacy.MapEditor.Modules.SceneViewer.Views;
 
-namespace P3D.Legacy.MapEditor.Components
+namespace P3D.Legacy.MapEditor.Components.Camera
 {
     public class Camera3DGemini : BaseCamera
     {
@@ -33,6 +33,11 @@ namespace P3D.Legacy.MapEditor.Components
             UserControl.KeyUp += OnKeyboard;
             UserControl.KeyDown += OnKeyboard;
             UserControl.PreviewKeyDown += OnKeyboard;
+        }
+
+        public override void Initialize()
+        {
+
         }
 
         // Invoked when the mouse moves over the second viewport

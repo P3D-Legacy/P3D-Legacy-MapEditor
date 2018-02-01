@@ -2,13 +2,15 @@
 using System.Windows;
 using System.Windows.Input;
 using Gemini.Modules.D3D.Controls;
+
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+
 using P3D.Legacy.MapEditor.Components;
+using P3D.Legacy.MapEditor.Components.Camera;
+using P3D.Legacy.MapEditor.Components.ModelSelector;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 using P3D.Legacy.MapEditor.Renders;
-using P3D.Legacy.MapEditor.Utils;
 
 namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 {
@@ -17,12 +19,9 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
     /// </summary>
     public partial class SceneView : IDisposable
     {
-        public GraphicsDevice GraphicsDevice { get; private set; }
         private SceneViewModel SceneViewModel => (SceneViewModel) DataContext;
-        private Render CurrentRender { get; set; }
+        private Render Render { get; set; }
         private Camera3DGemini Camera { get; set; }
-        private ModelSelectorGemini ModelSelector { get; set; }
-
 
         public SceneView()
         {
@@ -37,6 +36,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         public void Dispose()
         {
             GraphicsControl.Dispose();
+            GameDispose();
         }
 
         /// <summary>
@@ -46,15 +46,21 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         {
             GraphicsDevice = e.GraphicsDevice;
 
-            GraphicsControl.AlwaysRefresh = true;
-
             Camera = new Camera3DGemini(this);
             Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
+            Components.Add(Camera);
 
-            ModelSelector = new ModelSelectorGemini(this, Camera);
+            var modelSelector = new ModelSelectorMonoGame(Camera);
+            Components.Add(modelSelector);
 
-            CurrentRender = new Render(GraphicsDevice, Camera, ModelSelector, SceneViewModel.LevelInfo);
-            CurrentRender.Initialize();
+            Render = new Render(GraphicsDevice, Camera, modelSelector, SceneViewModel.LevelInfo);
+            Components.Add(Render);
+
+            Components.Add(new DebugComponent(GraphicsDevice));
+
+            Run();
+            GraphicsControl.AlwaysRefresh = true;
+            IsFixedTimeStep = false;
         }
 
         /// <summary>
@@ -62,9 +68,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         /// </summary>
         private void GraphicsControl_OnDraw(object sender, DrawEventArgs e)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            CurrentRender.Draw();
+            Tick();
         }
 
         private void GraphicsControl_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -73,7 +77,17 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         private void GraphicsControl_OnViewportChanged(object sender, SizeChangedInfo e)
         {
             Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
-            CurrentRender.ViewportChanged();
+            Render.ViewportChanged();
+        }
+
+        private void SceneViewDraw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+        }
+
+        private void SceneViewUpdate(GameTime gameTime)
+        {
+
         }
     }
 }

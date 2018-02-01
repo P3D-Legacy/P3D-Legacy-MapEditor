@@ -4,10 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace P3D.Legacy.MapEditor.Components
+namespace P3D.Legacy.MapEditor.Components.Camera
 {
     // http://www.dhpoware.com/demos/xnaFirstPersonCamera.html
-    public abstract class BaseCamera
+    public abstract class BaseCamera : IGameComponent
     {
         #region Default Values
 
@@ -127,6 +127,8 @@ namespace P3D.Legacy.MapEditor.Components
             _aspectRatio = graphicsDevice.Viewport.AspectRatio;
             UpdateProjectionMatrix(_fovx, _aspectRatio, _znear, _zfar);
         }
+
+        public abstract void Initialize();
 
         public void LookAt(Vector3 target) => LookAt(_eye, target, _yAxis);
         public void LookAt(Vector3 eye, Vector3 target, Vector3 up)

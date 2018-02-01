@@ -78,6 +78,7 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -118,6 +119,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BMFont\FontChar.cs" />
+    <Compile Include="BMFont\FontCommon.cs" />
+    <Compile Include="BMFont\FontFile.cs" />
+    <Compile Include="BMFont\FontInfo.cs" />
+    <Compile Include="BMFont\FontKerning.cs" />
+    <Compile Include="BMFont\FontPage.cs" />
+    <Compile Include="BMFont\FontRenderer.cs" />
+    <Compile Include="Components\DebugComponent.cs" />
     <Compile Include="Data\BackdropInfo.cs" />
     <Compile Include="Data\EntityFloorInfo.cs" />
     <Compile Include="Data\EntityInfo.cs" />
@@ -132,10 +141,12 @@
     <Compile Include="Data\Models\2D\DoubleFloorModel.cs" />
     <Compile Include="Data\Models\2D\FloorModel.cs" />
     <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceServiceSingleton.cs" />
-    <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceManager.cs" />
+    <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceService.cs" />
     <Compile Include="Modules\SceneViewer\MonoGame\DrawingSurfaceD3D9.cs" />
     <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceEventArgs.cs" />
-    <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceDXService.cs" />
+    <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceServiceDX.cs" />
+    <Compile Include="Modules\SceneViewer\Views\SceneView.Game.cs" />
+    <Compile Include="Modules\SceneViewer\Views\SceneView.SubClasses.cs" />
     <Compile Include="Renders\BaseModelListRenderer.cs" />
     <Compile Include="Data\Models\Blocks\BlockModel.cs" />
     <Compile Include="Data\Models\Blocks\CornerModel.cs" />
@@ -144,16 +155,16 @@
     <Compile Include="Data\Models\Blocks\PyramidModel.cs" />
     <Compile Include="Data\Models\Blocks\SlideModel.cs" />
     <Compile Include="Data\Models\Blocks\StairsModel.cs" />
-    <Compile Include="Components\BaseModelSelector.cs" />
+    <Compile Include="Components\ModelSelector\BaseModelSelector.cs" />
     <Compile Include="Effect\EffectResource.cs" />
     <Compile Include="Effect\FxaaEffect.cs" />
     <Compile Include="Renders\LevelRenderer.cs" />
     <Compile Include="Renders\BaseVertexRenderer.cs" />
-    <Compile Include="Components\Camera3DGemini.cs" />
-    <Compile Include="Components\Camera3DMonoGame.cs" />
-    <Compile Include="Components\BaseCamera.cs" />
-    <Compile Include="Components\ModelSelectorGemini.cs" />
-    <Compile Include="Components\ModelSelectorMonoGame.cs" />
+    <Compile Include="Components\Camera\Camera3DGemini.cs" />
+    <Compile Include="Components\Camera\Camera3DMonoGame.cs" />
+    <Compile Include="Components\Camera\BaseCamera.cs" />
+    <Compile Include="Components\ModelSelector\ModelSelectorGemini.cs" />
+    <Compile Include="Components\ModelSelector\ModelSelectorMonoGame.cs" />
     <Compile Include="Utils\TextureHandler.cs" />
     <Compile Include="Data\Vertices\VertexPositionNormalColorTexture.cs" />
     <Compile Include="Utils\TextureLoader.cs" />
@@ -217,6 +228,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ru.resx" />
+    <None Include="Content\Fonts\PixelUnicode.fnt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Effect\Resources\Compile.bat" />
     <EmbeddedResource Include="Effect\Resources\FxaaEffectDefault.dx11.mgfx" />
     <EmbeddedResource Include="Effect\Resources\FxaaEffectHigh.dx11.mgfx" />
@@ -249,8 +263,25 @@
       <Name>Gemini.Modules.D3D</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <Folder Include="Components\Render\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\Fonts\PixelUnicode_0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="Effect\Resources\FXAA.fx" />
     <Content Include="Effect\Resources\Fxaa3_11.h" />
   </ItemGroup>

@@ -27,8 +27,8 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
     /// or disposed.
     /// </summary>
     [Export(typeof(IGraphicsDeviceService))]
-    [Export(typeof(GraphicsDeviceDXService))]
-    public class GraphicsDeviceDXService : GraphicsDeviceServiceSingleton
+    [Export(typeof(GraphicsDeviceServiceDX))]
+    public class GraphicsDeviceServiceDX : GraphicsDeviceServiceSingleton
     {
         // Keep track of how many controls are sharing the singletonInstance.
         private static int _referenceCount;
@@ -62,7 +62,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         /// client controls should use the public AddRef method instead.
         /// </summary>
         [Obsolete("This constructor shouldn't be called directly. Instead, you should get the (singleton) instance from the IoC container.")]
-        public GraphicsDeviceDXService() { }
+        public GraphicsDeviceServiceDX() { }
 
         private void EnsureGraphicsDevice(int width = 1, int height = 1)
         {
@@ -101,9 +101,9 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         /// <summary>
         /// Gets a reference to the singleton instance.
         /// </summary>
-        public static GraphicsDeviceDXService AddRef(int width, int height)
+        public static GraphicsDeviceServiceDX AddRef(int width, int height)
         {
-            var singletonInstance = IoC.Get<GraphicsDeviceDXService>();
+            var singletonInstance = IoC.Get<GraphicsDeviceServiceDX>();
 
             // Increment the "how many controls sharing the device" reference count.
             if (Interlocked.Increment(ref _referenceCount) == 1)

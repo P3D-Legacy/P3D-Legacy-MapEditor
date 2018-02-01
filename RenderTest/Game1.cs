@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using P3D.Legacy.MapEditor.Components;
+using P3D.Legacy.MapEditor.Components.Camera;
+using P3D.Legacy.MapEditor.Components.ModelSelector;
 using P3D.Legacy.MapEditor.Renders;
 using P3D.Legacy.MapEditor.Utils;
 
@@ -71,7 +73,7 @@ namespace RenderTest
             Graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             Graphics.ApplyChanges();
 
-            Components.Add(new DebugComponent(this));
+            Components.Add(new DebugComponent(GraphicsDevice));
 
             var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
             //var path = "C:\\GitHub\\Maps\\YourRoom\\yourroom.dat";
@@ -135,7 +137,7 @@ namespace RenderTest
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _render.Draw();
+            _render.Draw(gameTime);
 
             base.Draw(gameTime);
         }

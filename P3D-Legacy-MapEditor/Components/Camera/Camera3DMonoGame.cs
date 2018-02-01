@@ -3,9 +3,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace P3D.Legacy.MapEditor.Components
+namespace P3D.Legacy.MapEditor.Components.Camera
 {
-    public class Camera3DMonoGame : BaseCamera, IGameComponent, IUpdateable, IComparable<GameComponent>
+    public class Camera3DMonoGame : BaseCamera, IUpdateable
     {
         private bool _enabled = true;
         public bool Enabled
@@ -44,7 +44,7 @@ namespace P3D.Legacy.MapEditor.Components
 
         public Camera3DMonoGame(Game game) : base(game.GraphicsDevice) => Game = game;
 
-        public void Initialize()
+        public override void Initialize()
         {
             _currentKeyboardState = Keyboard.GetState();
             _currentMouseState = Mouse.GetState();
@@ -165,7 +165,5 @@ namespace P3D.Legacy.MapEditor.Components
 
         protected virtual void OnEnabledChanged(object sender, EventArgs args) 
             => EnabledChanged?.Invoke(sender, args);
-
-        public int CompareTo(GameComponent other) => other.UpdateOrder - UpdateOrder;
     }
 }

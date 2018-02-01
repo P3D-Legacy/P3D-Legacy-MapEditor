@@ -1,8 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
@@ -18,8 +15,8 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
     /// Used to initialize and control the presentation of the graphics device.
     /// </summary>
     [Export(typeof(IGraphicsDeviceService))]
-    [Export(typeof(GraphicsDeviceManager))]
-    public partial class GraphicsDeviceManager : GraphicsDeviceServiceSingleton, IDisposable
+    [Export(typeof(GraphicsDeviceService))]
+    public partial class GraphicsDeviceService : GraphicsDeviceServiceSingleton, IDisposable
     {
         // Keep track of how many controls are sharing the singletonInstance.
         private static int _referenceCount;
@@ -27,9 +24,9 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         /// <summary>
         /// Gets a reference to the singleton instance.
         /// </summary>
-        public static GraphicsDeviceManager AddRef(int width, int height)
+        public static GraphicsDeviceService AddRef(int width, int height)
         {
-            var singletonInstance = IoC.Get<GraphicsDeviceManager>();
+            var singletonInstance = IoC.Get<GraphicsDeviceService>();
 
             // Increment the "how many controls sharing the device" reference count.
             if (Interlocked.Increment(ref _referenceCount) == 1)
@@ -103,7 +100,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         /// </summary>
         /// <param name="game">The game instance to attach.</param>
         //public GraphicsDeviceManager(Game game)
-        public GraphicsDeviceManager()
+        public GraphicsDeviceService()
         {
             _preferredBackBufferFormat = SurfaceFormat.Color;
             _preferredDepthStencilFormat = DepthFormat.Depth24;
@@ -134,7 +131,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
             PlatformConstruct();
         }
 
-        ~GraphicsDeviceManager()
+        ~GraphicsDeviceService()
         {
             Dispose(false);
         }

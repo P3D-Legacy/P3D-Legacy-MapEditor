@@ -1,23 +1,34 @@
 ﻿using System.Linq;
 using System.Windows.Input;
 
+using Microsoft.Xna.Framework;
+
+using P3D.Legacy.MapEditor.Components.Camera;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.Views;
 using P3D.Legacy.MapEditor.Renders;
 
-namespace P3D.Legacy.MapEditor.Components
+namespace P3D.Legacy.MapEditor.Components.ModelSelector
 {
     public class ModelSelectorGemini : BaseModelSelector
     {
         public ModelSelectorGemini(SceneView userControl, BaseCamera camera) : base(camera)
         {
+            /*
             userControl.MouseMove += OnMouse;
             userControl.MouseLeftButtonUp += OnMouse;
             userControl.MouseLeftButtonDown += OnMouse;
             userControl.MouseRightButtonUp += OnMouse;
             userControl.MouseRightButtonDown += OnMouse;
             userControl.MouseWheel += OnMouseWheel;
+            */
         }
 
+        public override void Initialize()
+        {
+
+        }
+
+        /*
         private void OnMouse(object sender, MouseEventArgs e)
         {
             Update();
@@ -26,8 +37,9 @@ namespace P3D.Legacy.MapEditor.Components
         {
 
         }
+        */
 
-        public void Update()
+        public override void Update(GameTime gameTime)
         {
             SelectedModel = null;
             SelectedModelDistance = float.MaxValue;

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Xml.Serialization;
-
 using Microsoft.Xna.Framework;
 
-namespace RenderTest.BMFont
+namespace P3D.Legacy.MapEditor.BMFont
 {
     public class FontInfo
     {

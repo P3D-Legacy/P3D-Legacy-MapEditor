@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace RenderTest.BMFont
+namespace P3D.Legacy.MapEditor.BMFont
 {
     public class FontChar
     {

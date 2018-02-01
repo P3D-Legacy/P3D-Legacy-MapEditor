@@ -34,17 +34,11 @@ namespace Gemini.Modules.D3D.Controls
         private D3D9ImageSource _d3DSurface;
 
         private TimeSpan _last = TimeSpan.Zero;
-        private readonly Stopwatch _stopwatch = new Stopwatch();
 
         protected IntPtr RenderTargetPtr;
         protected Int32Rect RenderTargetRectangle;
 
         protected bool ContentNeedsRefresh;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public double DrawTime { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this control will redraw every time the CompositionTarget.Rendering event is fired.
@@ -130,15 +124,13 @@ namespace Gemini.Modules.D3D.Controls
             var args = (RenderingEventArgs) e;
             if (args.RenderingTime == _last)
                 return;
-
+            
             _last = args.RenderingTime;
 
 
 
             if ((ContentNeedsRefresh || AlwaysRefresh) && BeginDraw())
             {
-                _stopwatch.Restart();
-
                 ContentNeedsRefresh = false;
 
                 EnsureRenderTarget();
@@ -146,10 +138,6 @@ namespace Gemini.Modules.D3D.Controls
                 RaiseDraw(new DrawEventArgs(this));
 
                 _d3DSurface.InvalidateD3DImage();
-
-                _stopwatch.Stop();
-
-                DrawTime = _stopwatch.Elapsed.TotalMilliseconds;
             }
         }
 

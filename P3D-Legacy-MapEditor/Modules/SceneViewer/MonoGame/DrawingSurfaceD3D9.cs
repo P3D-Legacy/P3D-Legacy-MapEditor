@@ -36,8 +36,8 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
             if (_graphicsDeviceService == null)
             {
                 // We use a render target, so the back buffer dimensions don't matter.
-                _graphicsDeviceService = GraphicsDeviceDXService.AddRef((int) ActualWidth, (int) ActualHeight);
-                //_graphicsDeviceService = GraphicsDeviceManager.AddRef((int) ActualWidth, (int) ActualHeight);
+                _graphicsDeviceService = GraphicsDeviceServiceDX.AddRef((int) ActualWidth, (int) ActualHeight);
+                //_graphicsDeviceService = GraphicsDeviceService.AddRef((int) ActualWidth, (int) ActualHeight);
                 _graphicsDeviceService.DeviceResetting += OnGraphicsDeviceServiceDeviceResetting;
 
                 SetViewport();
@@ -112,7 +112,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
             GraphicsDevice.SetRenderTarget(_renderTarget);
             SetViewport();
             base.RaiseDraw(args);
-            //_graphicsDeviceService.GraphicsDevice.Flush();
+            _graphicsDeviceService.GraphicsDevice.Flush();
             GraphicsDevice.SetRenderTarget(null);
         }
 

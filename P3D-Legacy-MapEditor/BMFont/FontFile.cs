@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace RenderTest.BMFont
+namespace P3D.Legacy.MapEditor.BMFont
 {
     [XmlRoot("font")]
     public class FontFile : IDisposable
