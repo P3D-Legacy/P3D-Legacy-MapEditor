@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -49,10 +50,11 @@ namespace P3D.Legacy.MapEditor.Effect
         }
 
 
-        public FxaaEffect(GraphicsDevice graphicsDevice, FxaaQuality fxaaQuality = FxaaQuality.High) 
+        public FxaaEffect(GraphicsDevice graphicsDevice, FxaaQuality fxaaQuality = FxaaQuality.Default) 
             : base(graphicsDevice, GetFxaaQuality(fxaaQuality))
         {
             CacheEffectParameters(null);
+            SetDefaultQualityParameters();
         }
         private static byte[] GetFxaaQuality(FxaaQuality fxaaQuality)
         {
@@ -83,21 +85,21 @@ namespace P3D.Legacy.MapEditor.Effect
         }
 
 
-        public void SetHightQuality()
+        public void SetHightQualityParameters()
         {
             SubpixelQuality = 1.00f;
             EdgeThreshold = 0.125f;
             EdgeThresholdMin = 0.0625f;
         }
 
-        public void SetDefaultQuality()
+        public void SetDefaultQualityParameters()
         {
             SubpixelQuality = 0.75f;
             EdgeThreshold = 0.166f;
             EdgeThresholdMin = 0.0833f;
         }
 
-        public void SetLowQuality()
+        public void SetLowQualityParameters()
         {
             SubpixelQuality = 0.50f;
             EdgeThreshold = 0.250f;

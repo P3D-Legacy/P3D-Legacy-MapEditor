@@ -8,6 +8,14 @@ using P3D.Legacy.MapEditor.World;
 
 namespace P3D.Legacy.MapEditor.Renders
 {
+    public enum AntiAliasing
+    {
+        None,
+        FXAA,
+        SSAA,
+        MSAA
+    }
+
     public class Render : IGameComponent
     {
         private GraphicsDevice GraphicsDevice { get; }
@@ -17,11 +25,10 @@ namespace P3D.Legacy.MapEditor.Renders
 
         private BasicEffect BasicEffect { get; set; }
         private AlphaTestEffect AlphaTestEffect { get; set; }
+
+        private AntiAliasing AntiAliasing { get; set; } = AntiAliasing.MSAA;
         private FxaaEffect FxaaEffect { get; set; }
-        private bool FxaaEnabled { get; set; } = true;
-        private const float FxaaQualitySubpix = 0.75f;
-        private const float FxaaQualityEdgeThreshold = 0.166f;
-        private const float FxaaQualityEdgeThresholdMin = 0.0833f;
+        private int Scale { get; set; } = 1;
 
         private Level Level { get; set; }
 
@@ -42,31 +49,11 @@ namespace P3D.Legacy.MapEditor.Renders
         }
         
         public void Initialize()
-        {       
-            RenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height,
-                false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+        {
+            FxaaEffect = new FxaaEffect(GraphicsDevice);
+            FxaaEffect.SetDefaultQualityParameters();
 
-            /*
-            FxaaEffect = new FxaaEffect(GraphicsDevice)
-            {
-                SubpixelQuality = FxaaQualitySubpix,
-                EdgeThreshold = FxaaQualityEdgeThreshold,
-                EdgeThresholdMin = FxaaQualityEdgeThresholdMin,
-
-                InverseDimensions = new Vector2(1f / GraphicsDevice.Viewport.Width, 1f / GraphicsDevice.Viewport.Height),
-                //InvViewportWidth = 1f / GraphicsDevice.Viewport.Width,
-                //InvViewportHeight = 1f / GraphicsDevice.Viewport.Height,
-
-                RenderTarget = RenderTarget
-            };
-            */
-            FxaaEffect = new FxaaEffect(GraphicsDevice)
-            {
-                InverseDimensions = new Vector2(1f / GraphicsDevice.Viewport.Width, 1f / GraphicsDevice.Viewport.Height),
-                RenderTarget = RenderTarget
-            };
-            FxaaEffect.SetHightQuality();
-            //FxaaEffect.CurrentTechnique = FxaaEffect.PCTechnique;
+            ViewportChanged();
 
             BasicEffect = new BasicEffect(GraphicsDevice)
             {
@@ -90,10 +77,34 @@ namespace P3D.Legacy.MapEditor.Renders
         public void ViewportChanged()
         {
             RenderTarget?.Dispose();
-            RenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height,
+            RenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width * Scale, GraphicsDevice.Viewport.Height * Scale,
                 false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
-            FxaaEffect.InverseDimensions = new Vector2(1f / GraphicsDevice.Viewport.Width, 1f / GraphicsDevice.Viewport.Height);
+            FxaaEffect.InverseDimensions = new Vector2(1f / GraphicsDevice.Viewport.Width * Scale, 1f / GraphicsDevice.Viewport.Height * Scale);
             FxaaEffect.RenderTarget = RenderTarget;
+        }
+
+        public void SetAntiAliasing(AntiAliasing antiAliasing)
+        {
+            AntiAliasing = antiAliasing;
+
+            Scale = 1;
+
+            switch (AntiAliasing)
+            {
+                case AntiAliasing.None:
+                    break;
+
+                case AntiAliasing.FXAA:
+                    break;
+
+                case AntiAliasing.SSAA:
+                    Scale = 2;
+                    break;
+
+                case AntiAliasing.MSAA:
+                    break;
+            }
+            ViewportChanged();
         }
 
         public void Draw()
@@ -111,18 +122,26 @@ namespace P3D.Legacy.MapEditor.Renders
             ModelSelector?.Draw(BasicEffect);
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.SetRenderTargets(prevRenderTargets);
-            
-            if (FxaaEnabled)
+
+            switch (AntiAliasing)
             {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, FxaaEffect);
-                SpriteBatch.Draw(RenderTarget, Vector2.Zero, Color.White);
-                SpriteBatch.End();
-            }
-            else
-            {
-                SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointClamp);
-                SpriteBatch.Draw(RenderTarget, Vector2.Zero, Color.White);
-                SpriteBatch.End();
+                case AntiAliasing.None:
+                case AntiAliasing.MSAA:
+                    SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointClamp);
+                    SpriteBatch.Draw(RenderTarget, Vector2.Zero, Color.White);
+                    SpriteBatch.End();
+                    break;
+                case AntiAliasing.FXAA:
+                    SpriteBatch.Begin(SpriteSortMode.Immediate, effect: FxaaEffect);
+                    SpriteBatch.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 1f / Scale, SpriteEffects.None, 0f);
+                    SpriteBatch.End();
+                    break;
+
+                case AntiAliasing.SSAA:
+                    SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
+                    SpriteBatch.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 1f / (float)Scale, SpriteEffects.None, 0f);
+                    SpriteBatch.End();
+                    break;
             }
         }
     }
