@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace P3D.Legacy.MapEditor.Components.Camera
 {
+    // TODO: remove velocity and keep it simple
     // http://www.dhpoware.com/demos/xnaFirstPersonCamera.html
     public abstract class BaseCamera : IGameComponent
     {

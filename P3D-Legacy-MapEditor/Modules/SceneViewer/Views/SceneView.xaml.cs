@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+
 using Gemini.Modules.D3D.Controls;
 
-using Microsoft.Xna.Framework;
-
-using P3D.Legacy.MapEditor.Components;
 using P3D.Legacy.MapEditor.Components.Camera;
+using P3D.Legacy.MapEditor.Components.Debug;
 using P3D.Legacy.MapEditor.Components.ModelSelector;
+using P3D.Legacy.MapEditor.Components.Render;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame;
 using P3D.Legacy.MapEditor.Modules.SceneViewer.ViewModels;
 using P3D.Legacy.MapEditor.Renders;
@@ -50,17 +50,16 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
             Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
             Components.Add(Camera);
 
-            var modelSelector = new ModelSelectorMonoGame(Camera);
+            var modelSelector = new ModelSelectorDefault(Camera);
             Components.Add(modelSelector);
 
             Render = new Render(GraphicsDevice, Camera, modelSelector, SceneViewModel.LevelInfo);
             Components.Add(Render);
 
-            Components.Add(new DebugComponent(GraphicsDevice));
+            Components.Add(new DebugTextComponent(GraphicsDevice, Components));
 
             Run();
             GraphicsControl.AlwaysRefresh = true;
-            IsFixedTimeStep = false;
         }
 
         /// <summary>
@@ -68,6 +67,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         /// </summary>
         private void GraphicsControl_OnDraw(object sender, DrawEventArgs e)
         {
+            // We can rely on CompositionTarget.Rendering
             Tick();
         }
 
@@ -78,16 +78,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         {
             Camera.UpdateProjectionMatrix(45f, GraphicsDevice.Viewport.AspectRatio, 0.01f, 1000f);
             Render.ViewportChanged();
-        }
-
-        private void SceneViewDraw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-        }
-
-        private void SceneViewUpdate(GameTime gameTime)
-        {
-
         }
     }
 }

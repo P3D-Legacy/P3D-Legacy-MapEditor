@@ -33,8 +33,6 @@ namespace Gemini.Modules.D3D.Controls
 
         private D3D9ImageSource _d3DSurface;
 
-        private TimeSpan _last = TimeSpan.Zero;
-
         protected IntPtr RenderTargetPtr;
         protected Int32Rect RenderTargetRectangle;
 
@@ -121,14 +119,6 @@ namespace Gemini.Modules.D3D.Controls
 
         private void OnCompositionTargetRendering(object sender, EventArgs e)
         {
-            var args = (RenderingEventArgs) e;
-            if (args.RenderingTime == _last)
-                return;
-            
-            _last = args.RenderingTime;
-
-
-
             if ((ContentNeedsRefresh || AlwaysRefresh) && BeginDraw())
             {
                 ContentNeedsRefresh = false;

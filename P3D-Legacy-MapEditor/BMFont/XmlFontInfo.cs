@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Xml.Serialization;
+
 using Microsoft.Xna.Framework;
 
 namespace P3D.Legacy.MapEditor.BMFont
 {
-    public class FontInfo
+    public class XmlFontInfo
     {
         [XmlAttribute("face")]
         public String Face { get; set; }
@@ -33,7 +34,9 @@ namespace P3D.Legacy.MapEditor.BMFont
         [XmlAttribute("aa")]
         public Int32 SuperSampling { get; set; }
 
-        private Rectangle _Padding;
+        [XmlIgnore]
+        public Rectangle _Padding;
+
         [XmlAttribute("padding")]
         public String Padding
         {
@@ -43,12 +46,14 @@ namespace P3D.Legacy.MapEditor.BMFont
             }
             set
             {
-                String[] padding = value.Split(',');
+                var padding = value.Split(',');
                 _Padding = new Rectangle(Convert.ToInt32(padding[0]), Convert.ToInt32(padding[1]), Convert.ToInt32(padding[2]), Convert.ToInt32(padding[3]));
             }
         }
 
-        private Point _Spacing;
+        [XmlIgnore]
+        public Point _Spacing;
+
         [XmlAttribute("spacing")]
         public String Spacing
         {
@@ -58,7 +63,7 @@ namespace P3D.Legacy.MapEditor.BMFont
             }
             set
             {
-                String[] spacing = value.Split(',');
+                var spacing = value.Split(',');
                 _Spacing = new Point(Convert.ToInt32(spacing[0]), Convert.ToInt32(spacing[1]));
             }
         }

@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework.Input;
 
 using P3D.Legacy.MapEditor.Components;
 using P3D.Legacy.MapEditor.Components.Camera;
+using P3D.Legacy.MapEditor.Components.Debug;
 using P3D.Legacy.MapEditor.Components.ModelSelector;
+using P3D.Legacy.MapEditor.Components.Render;
 using P3D.Legacy.MapEditor.Renders;
 using P3D.Legacy.MapEditor.Utils;
 
@@ -73,8 +75,6 @@ namespace RenderTest
             Graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             Graphics.ApplyChanges();
 
-            Components.Add(new DebugComponent(GraphicsDevice));
-
             var path = "C:\\GitHub\\Maps\\Goldenrod\\goldenrod.dat";
             //var path = "C:\\GitHub\\Maps\\YourRoom\\yourroom.dat";
             //var path = "C:\\GitHub\\Maps\\UnderwaterCave\\main.dat";
@@ -85,11 +85,13 @@ namespace RenderTest
             var camera = new Camera3DMonoGame(this);
             Components.Add(camera);
 
-            var modelSelector = new ModelSelectorMonoGame(camera);
+            var modelSelector = new ModelSelectorDefault(camera);
             Components.Add(modelSelector);
 
             _render = new Render(GraphicsDevice, camera, modelSelector, levelInfo);
             Components.Add(_render);
+
+            Components.Add(new DebugTextComponent(GraphicsDevice, Components));
 
             base.Initialize();
         }

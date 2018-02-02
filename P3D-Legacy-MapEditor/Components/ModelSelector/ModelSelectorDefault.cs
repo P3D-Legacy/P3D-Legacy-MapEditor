@@ -7,9 +7,9 @@ using P3D.Legacy.MapEditor.Renders;
 
 namespace P3D.Legacy.MapEditor.Components.ModelSelector
 {
-    public class ModelSelectorMonoGame : BaseModelSelector, IUpdateable
+    public class ModelSelectorDefault : BaseModelSelector
     {
-       public ModelSelectorMonoGame(BaseCamera camera) : base(camera) { }
+       public ModelSelectorDefault(BaseCamera camera) : base(camera) { }
 
         public override void Initialize() { }
 

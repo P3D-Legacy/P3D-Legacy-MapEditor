@@ -4,13 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:monogame="clr-namespace:P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame"
+             xmlns:views="clr-namespace:P3D.Legacy.MapEditor.Modules.SceneViewer.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-	<Grid>
-        <monogame:DrawingSurfaceD3D9 x:Name="GraphicsControl"
+    <views:DpiDecorator>
+        <Grid>
+            <monogame:DrawingSurfaceD3D9 x:Name="GraphicsControl"
                                          LoadContent="GraphicsControl_OnLoadContent"
                                          ViewportChanged="GraphicsControl_OnViewportChanged"
                                          Draw="GraphicsControl_OnDraw"
                                          MouseRightButtonDown="GraphicsControl_OnMouseRightButtonDown"/>
-	</Grid>
+        </Grid>
+    </views:DpiDecorator>
 </UserControl>

@@ -31,6 +31,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 
         private bool _initialized;
 
+        // Can't be more than CompositionTarget.Rendering draw rate
         private TimeSpan _targetElapsedTime = TimeSpan.FromTicks(166667); // 60fps
 
         private TimeSpan _maxElapsedTime = TimeSpan.FromMilliseconds(500);
@@ -117,7 +118,8 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
             }
         }
 
-        public bool IsFixedTimeStep { get; set; } = true;
+        // CompositionTarget.Rendering is forcing us to use it
+        public bool IsFixedTimeStep => true;
 
         public GraphicsDevice GraphicsDevice { get; private set; }
 
@@ -154,11 +156,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 
         public void Tick()
         {
-            // NOTE: This code is very sensitive and can break very badly
-            // with even what looks like a safe change.  Be sure to test 
-            // any change fully in both the fixed and variable timestep 
-            // modes across multiple devices and platforms.
-
             RetryTick:
 
             // Advance the accumulated elapsed time.
@@ -197,7 +194,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
                     _accumulatedElapsedTime -= TargetElapsedTime;
                     ++stepCount;
 
-                    DoUpdate(_gameTime);
+                    Update(_gameTime);
                 }
 
                 //Every update after the first accumulates lag
@@ -223,21 +220,12 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
                 // that occured for the fixed length updates.
                 _gameTime.ElapsedGameTime = TimeSpan.FromTicks(TargetElapsedTime.Ticks * stepCount);
             }
-            else
-            {
-                // Perform a single variable length update.
-                _gameTime.ElapsedGameTime = _accumulatedElapsedTime;
-                _gameTime.TotalGameTime += _accumulatedElapsedTime;
-                _accumulatedElapsedTime = TimeSpan.Zero;
-
-                DoUpdate(_gameTime);
-            }
 
             // Draw unless the update suppressed it.
             if (_suppressDraw)
                 _suppressDraw = false;
             else
-                DoDraw(_gameTime);
+                Draw(_gameTime);
         }
 
         #endregion
@@ -259,7 +247,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
 
         protected virtual void Draw(GameTime gameTime)
         {
-            SceneViewDraw(gameTime);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
             _drawables.ForEachFilteredItem(DrawAction, gameTime);
         }
 
@@ -269,7 +257,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         protected virtual void Update(GameTime gameTime)
         {
             _updateables.ForEachFilteredItem(UpdateAction, gameTime);
-            SceneViewUpdate(gameTime);
         }
 
         #endregion Protected Methods
@@ -292,16 +279,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.Views
         #endregion Event Handlers
 
         #region Internal Methods
-
-        internal void DoUpdate(GameTime gameTime)
-        {
-            Update(gameTime);
-        }
-
-        internal void DoDraw(GameTime gameTime)
-        {
-            Draw(gameTime);
-        }
 
         internal void DoInitialize()
         {

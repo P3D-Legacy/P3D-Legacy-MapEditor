@@ -1,15 +1,15 @@
 ﻿using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using P3D.Legacy.MapEditor.Components;
 using P3D.Legacy.MapEditor.Components.Camera;
 using P3D.Legacy.MapEditor.Components.ModelSelector;
 using P3D.Legacy.MapEditor.Data;
 using P3D.Legacy.MapEditor.Effect;
 using P3D.Legacy.MapEditor.World;
 
-namespace P3D.Legacy.MapEditor.Renders
+namespace P3D.Legacy.MapEditor.Components.Render
 {
     public enum AntiAliasing
     {
@@ -52,6 +52,9 @@ namespace P3D.Legacy.MapEditor.Renders
         public event EventHandler<EventArgs> DrawOrderChanged;
         public event EventHandler<EventArgs> VisibleChanged;
 
+
+        public int DrawCalls => StaticDrawCalls;
+        internal static int StaticDrawCalls;
 
         private GraphicsDevice GraphicsDevice { get; }
         private SpriteBatch SpriteBatch { get; }
@@ -172,7 +175,7 @@ namespace P3D.Legacy.MapEditor.Renders
 
                 case AntiAliasing.SSAA:
                     SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
-                    SpriteBatch.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 1f / (float)Scale, SpriteEffects.None, 0f);
+                    SpriteBatch.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 1f / Scale, SpriteEffects.None, 0f);
                     SpriteBatch.End();
                     break;
             }

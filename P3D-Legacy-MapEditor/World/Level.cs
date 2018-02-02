@@ -5,7 +5,7 @@ using System.Linq;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using P3D.Legacy.MapEditor.Components.Render;
 using P3D.Legacy.MapEditor.Data;
 using P3D.Legacy.MapEditor.Data.Models;
 using P3D.Legacy.MapEditor.Data.World;
@@ -250,7 +250,7 @@ namespace P3D.Legacy.MapEditor.World
 
         public void Draw(BasicEffect basicEffect, AlphaTestEffect alphaTestEffect)
         {
-            BaseVertexRenderer.DrawCalls = 0;
+            Render.StaticDrawCalls = 0;
 
             LevelRenderer.Draw(this, basicEffect, alphaTestEffect);
             //BaseModel.DrawStatic(this, basicEffect, alphaTestEffect);

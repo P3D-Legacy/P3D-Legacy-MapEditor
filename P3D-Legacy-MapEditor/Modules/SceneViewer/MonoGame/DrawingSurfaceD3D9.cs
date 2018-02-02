@@ -10,15 +10,13 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
 {
     public class DrawingSurfaceD3D9 : BaseD3D9DrawingSurface
     {
+        public int RenderWidth => Math.Max(1, (int) (ActualWidth * 1.0D));
+        public int RenderHeight => Math.Max(1, (int) (ActualHeight * 1.0D));
+
         /// <summary>
         /// Occurs when the control has initialized the GraphicsDevice.
         /// </summary>
         public event EventHandler<GraphicsDeviceEventArgs> LoadContent;
-
-        /// <summary>
-        /// Occurs when the control is unloading the GraphicsDevice.
-        /// </summary>
-        public event EventHandler<GraphicsDeviceEventArgs> UnloadContent;
 
         private GraphicsDeviceServiceSingleton _graphicsDeviceService;
         private RenderTarget2D _renderTarget;
@@ -53,8 +51,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         {
             if (_graphicsDeviceService != null)
             {
-                //RaiseUnloadContent(new GraphicsDeviceEventArgs(GraphicsDevice));
-
                 _graphicsDeviceService.DeviceResetting -= OnGraphicsDeviceServiceDeviceResetting;
                 _graphicsDeviceService = null;
             }
@@ -81,10 +77,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
         {
             if (_renderTarget == null)
             {
-                var width = Math.Max((int)ActualWidth, 100);
-                var height = Math.Max((int)ActualHeight, 100);
-
-                _renderTarget = new RenderTarget2D(GraphicsDevice, width, height,
+                _renderTarget = new RenderTarget2D(GraphicsDevice, RenderWidth, RenderHeight,
                     false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, 1, RenderTargetUsage.PlatformContents, true);
 
                 RenderTargetPtr = GetRenderTargetPtr();
@@ -96,9 +89,6 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
 
         protected virtual void RaiseLoadContent(GraphicsDeviceEventArgs args)
             => LoadContent?.Invoke(this, args);
-
-        protected virtual void RaiseUnloadContent(GraphicsDeviceEventArgs args)
-            => UnloadContent?.Invoke(this, args);
 
         protected override void RaiseViewportChanged(SizeChangedInfo args)
         {
@@ -124,7 +114,7 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
             // a smaller control? To avoid unwanted stretching, we set the
             // viewport to only use the top left portion of the full backbuffer.
             _graphicsDeviceService.GraphicsDevice.Viewport = new Viewport(
-                0, 0, Math.Max(1, (int) ActualWidth), Math.Max(1, (int) ActualHeight));
+                0, 0, RenderWidth, RenderHeight);
         }
 
         private IntPtr GetRenderTargetPtr()
@@ -149,13 +139,14 @@ namespace P3D.Legacy.MapEditor.Modules.SceneViewer.MonoGame
 
         protected override void Dispose(bool disposing)
         {
-            if (!IsDisposed)
+            base.Dispose(disposing);
+
+            if (disposing)
             {
                 _renderTarget?.Dispose();
-                _graphicsDeviceService?.Release(disposing);
             }
 
-            base.Dispose(disposing);
+            _graphicsDeviceService?.Release(disposing);
         }
 
         ~DrawingSurfaceD3D9()

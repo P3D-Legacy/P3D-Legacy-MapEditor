@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace P3D.Legacy.MapEditor.BMFont
 {
-    public class FontKerning
+    public class XmlFontKerning
     {
         [XmlAttribute("first")]
         public Int32 First { get; set; }

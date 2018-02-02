@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using Microsoft.Xna.Framework.Graphics;
-
+using P3D.Legacy.MapEditor.Components.Render;
 using P3D.Legacy.MapEditor.Data.Vertices;
 using P3D.Legacy.MapEditor.World;
 
@@ -9,8 +9,6 @@ namespace P3D.Legacy.MapEditor.Renders
 {
     public abstract class BaseVertexRenderer
     {
-        public static int DrawCalls = 0;
-
         public List<VertexPositionNormalColorTexture> Vertices { get; }
         public List<int> Indices { get; }
 
@@ -78,7 +76,7 @@ namespace P3D.Legacy.MapEditor.Renders
 
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, StaticVertexBuffer.VertexCount / 3);
                 //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, Vertices.Count, 0, Indices.Count / 3);
-                DrawCalls++;
+                Render.StaticDrawCalls++;
             }
 
 
@@ -170,7 +168,7 @@ namespace P3D.Legacy.MapEditor.Renders
             {
                 effectPass.Apply();
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, StaticVertexBuffer.VertexCount / 3);
-                DrawCalls++;
+                Render.StaticDrawCalls++;
             }
 
             graphicsDevice.DepthStencilState = StencilReadOnly;
@@ -179,7 +177,7 @@ namespace P3D.Legacy.MapEditor.Renders
             {
                 effectPass.Apply();
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, StaticVertexBuffer.VertexCount / 3);
-                DrawCalls++;
+                Render.StaticDrawCalls++;
             }
 
 

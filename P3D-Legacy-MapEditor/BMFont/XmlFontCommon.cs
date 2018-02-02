@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace P3D.Legacy.MapEditor.BMFont
 {
-    public class FontCommon
+    public class XmlFontCommon
     {
         [XmlAttribute("lineHeight")]
         public Int32 LineHeight { get; set; }

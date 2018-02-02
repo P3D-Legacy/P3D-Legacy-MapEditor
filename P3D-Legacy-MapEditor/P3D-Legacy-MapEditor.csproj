@@ -119,14 +119,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BMFont\FontChar.cs" />
-    <Compile Include="BMFont\FontCommon.cs" />
     <Compile Include="BMFont\FontFile.cs" />
-    <Compile Include="BMFont\FontInfo.cs" />
-    <Compile Include="BMFont\FontKerning.cs" />
-    <Compile Include="BMFont\FontPage.cs" />
-    <Compile Include="BMFont\FontRenderer.cs" />
-    <Compile Include="Components\DebugComponent.cs" />
+    <Compile Include="BMFont\FontRendererDefault.cs" />
+    <Compile Include="BMFont\FontScalableRenderer.cs" />
+    <Compile Include="BMFont\IFontRenderer.cs" />
+    <Compile Include="BMFont\XmlFontChar.cs" />
+    <Compile Include="BMFont\XmlFontCommon.cs" />
+    <Compile Include="BMFont\XmlFontFile.cs" />
+    <Compile Include="BMFont\XmlFontInfo.cs" />
+    <Compile Include="BMFont\XmlFontKerning.cs" />
+    <Compile Include="BMFont\XmlFontPage.cs" />
+    <Compile Include="Components\Debug\DebugTextComponent.cs" />
     <Compile Include="Data\BackdropInfo.cs" />
     <Compile Include="Data\EntityFloorInfo.cs" />
     <Compile Include="Data\EntityInfo.cs" />
@@ -145,6 +148,7 @@
     <Compile Include="Modules\SceneViewer\MonoGame\DrawingSurfaceD3D9.cs" />
     <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceEventArgs.cs" />
     <Compile Include="Modules\SceneViewer\MonoGame\GraphicsDeviceServiceDX.cs" />
+    <Compile Include="Modules\SceneViewer\Views\DpiDecorator.cs" />
     <Compile Include="Modules\SceneViewer\Views\SceneView.Game.cs" />
     <Compile Include="Modules\SceneViewer\Views\SceneView.SubClasses.cs" />
     <Compile Include="Renders\BaseModelListRenderer.cs" />
@@ -163,8 +167,7 @@
     <Compile Include="Components\Camera\Camera3DGemini.cs" />
     <Compile Include="Components\Camera\Camera3DMonoGame.cs" />
     <Compile Include="Components\Camera\BaseCamera.cs" />
-    <Compile Include="Components\ModelSelector\ModelSelectorGemini.cs" />
-    <Compile Include="Components\ModelSelector\ModelSelectorMonoGame.cs" />
+    <Compile Include="Components\ModelSelector\ModelSelectorDefault.cs" />
     <Compile Include="Utils\TextureHandler.cs" />
     <Compile Include="Data\Vertices\VertexPositionNormalColorTexture.cs" />
     <Compile Include="Utils\TextureLoader.cs" />
@@ -184,7 +187,7 @@
     <Compile Include="Modules\SceneViewer\Inspectors\FloatEditorViewModel.cs" />
     <Compile Include="Modules\SceneViewer\InspectorExtensions.cs" />
     <Compile Include="Modules\SceneViewer\Module.cs" />
-    <Compile Include="Renders\Render.cs" />
+    <Compile Include="Components\Render\Render.cs" />
     <Compile Include="Modules\SceneViewer\ViewModels\SceneViewModel.cs" />
     <Compile Include="Modules\SceneViewer\Inspectors\FloatEditorView.xaml.cs">
       <DependentUpon>FloatEditorView.xaml</DependentUpon>
@@ -228,7 +231,16 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.ru.resx" />
-    <None Include="Content\Fonts\PixelUnicode.fnt">
+    <None Include="Content\Fonts\Lucida Console_14.fnt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_15.fnt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_32.fnt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_64.fnt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Effect\Resources\Compile.bat" />
@@ -263,23 +275,33 @@
       <Name>Gemini.Modules.D3D</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Components\Render\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Content\Fonts\PixelUnicode_0.png">
+    <None Include="Content\Fonts\Lucida Console_14_0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\PixelUnicode_1.png">
+    <None Include="Content\Fonts\PixelUnicode_15_0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\PixelUnicode_2.png">
+    <None Include="Content\Fonts\PixelUnicode_32_0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\PixelUnicode_3.png">
+    <None Include="Content\Fonts\PixelUnicode_32_1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\Fonts\PixelUnicode_4.png">
+    <None Include="Content\Fonts\PixelUnicode_64_0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_64_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_64_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_64_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Fonts\PixelUnicode_64_4.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="Effect\Resources\FXAA.fx" />
